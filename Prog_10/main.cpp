@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <random>
+#include <ctime>
 
 
 using namespace std;
@@ -26,8 +27,8 @@ void couleur (const unsigned & coul) {
 typedef vector <unsigned> line; // un type représentant une ligne de la grille
 typedef vector <line> mat; // un type représentant la grille
 struct maPosition {
-    unsigned abs;
-    unsigned ord;
+    unsigned abs; //colonnes
+    unsigned ord; //lignes
 };
 
 // profil de la grille
@@ -90,23 +91,23 @@ mat makeAMove (mat & grid, const maPosition & pos, const char& direction, const 
     unsigned coordonnees = grid[pos.abs][pos.ord];
     if ((direction == haut) && pos.ord != bordmin)
     {
+        grid[pos.abs][pos.ord] = grid[pos.abs-1][pos.ord];
+        grid[pos.abs-1][pos.ord] = coordonnees;
+    }
+    else if ((direction == gauche) && pos.abs != bordmin)
+    {
         grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord-1];
         grid[pos.abs][pos.ord-1] = coordonnees;
     }
-    else if ((direction == gauche) && pos.abs != bordmin)
-    {
-        grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord-1];
-        grid[pos.abs-1][pos.ord] = coordonnees;
-    }
     if ((direction == bas) && pos.ord != bordmax)
+    {
+        grid[pos.abs][pos.ord] = grid[pos.abs+1][pos.ord];
+        grid[pos.abs+1][pos.ord] = coordonnees;
+    }
+    else if ((direction == droite) && pos.abs != bordmax)
     {
         grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord+1];
         grid[pos.abs][pos.ord+1] = coordonnees;
-    }
-    else if ((direction == gauche) && pos.abs != bordmin)
-    {
-        grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord+1];
-        grid[pos.abs+1][pos.ord] = coordonnees;
     }
     else
     {
@@ -120,60 +121,80 @@ mat makeAMove (mat & grid, const maPosition & pos, const char& direction, const 
 
 bool atLeastThreeInAColumn (const mat & grid, maPosition & pos, unsigned& howMany)
 {
-    for (size_t i=0; i<grid.size(); i++) //colonnes
+    for (unsigned j=0; j<grid.size(); j++) //colonnes
     {
-        for (size_t j=0; j<grid.size(); j++) //lignes
+        howMany =1; //on réinitialise howmany à chaque changement de colonnes, 1 parce qu'on compte le nombre comparé
+        for (unsigned i=0; i<grid.size(); i++) //lignes
         {
-            //grid[j][i] // j étant en premier on va passer dans la case i de toutes les lignes(donc colonnes)
-            if ((i < grid.size()-2) && (grid[j][i] == grid[j][i+1]) && (grid[j][i] == grid[j][i+2])) //grid.size()-2 pour pas faire les deux dernières lignes vu qu'on pourra pas avoir une suite de 3 dessus.
+            unsigned valeurCase = grid[i][j]; // j étant en premier on va passer dans la case i de toutes les lignes(donc colonnes)
+            if ((i < grid.size()-1) && (valeurCase == grid[j][i+1])) //grid.size()-1 pour pas faire de débordements.
             {
-                howMany = {grid[j][i], grid[j][i+1], grid[j][i+2]};
-                return true; // c'est un bool, je peux pas dire combien de combinaisons sont faites.
+                howMany = howMany+1; // y'a bien une égalité entre deux cases.
+            }
+            else if (howMany > 2)
+            {
+                pos = {j,i-howMany};
+                cout << "YOU DID IT, AMAZING! COL" << j << " " << howMany << endl;
+                return true;
+            }
+            else if ((i < grid.size()-1) && (valeurCase != grid[j][i+1]))
+            {
+                howMany = 1; // parce que la suite est interrompue on reprend depuis la nouvelle valeur comparé
             }
         }
-        cout << endl;
     }
+    cout << "J'aurais fais mieux, mais ok" << endl;
+    return false;
     // Cette fonction parcourt la grille afin de trouver une suite d’au moins 3 nombres identiques
     // sur la même colonne. Elle renvoie vrai si une telle suite a été trouvée, faux sinon.
     // Si elle a renvoyée vrai, on a une suite de howMany tous égaux à partir des coordonnées pos.
 }
 
-// bool atLeastThreeInARow (const mat & grid, maPosition & pos, unsigned & howMany)
-// {
-//     for (size_t i=0; i<grid.size(); i++) //lignes
-//     {
-//         for (size_t j=0; j<grid.size(); j++) //colonnes
-//         {
-//             if ((j < grid.size()-2) && (grid[i][j] == grid[i][j+1]) && (grid[i][j] == grid[i][j+2]))
-//             {
-//                 howMany = {grid[i][j], grid[i][j+1], grid[i][j+2]};
-//                 return true; // c'est un bool, je peux pas dire combien de combinaisons sont faites.
-//             }
-//         }
-//         cout << endl;
-//     }
-// }
+bool atLeastThreeInARow (const mat & grid, maPosition & pos, unsigned& howMany)
+{
+    for (unsigned j=0; j<grid.size(); j++) //lignes
+    {
+        howMany =1; //on réinitialise howmany à chaque changement de lignes, 1 parce qu'on compte le nombre comparé
+        for (unsigned i=0; i<grid.size(); i++) //colonnes
+        {
+            unsigned valeurCase = grid[i][j];// j étant en premier on va passer dans la case i de toutes les lignes(donc colonnes)
+            if ((i < grid.size()-1) && (valeurCase == grid[i+1][j])) //grid.size()-1 pour pas faire de débordements.
+            {
+                howMany = howMany+1; // y'a bien une égalité entre deux cases.
+            }
+            else if (howMany > 2)
+            {
+                pos = {i-howMany,j};
+                cout << "YOU DID IT, AMAZING! ROW" << j << " " << howMany << endl;
+                return true;
+            }
+            else if ((i < grid.size()-1) && (valeurCase != grid[i+1][j]))
+            {
+                howMany = 1; // parce que la suite est interrompue on reprend depuis la nouvelle valeur comparé
+            }
+        }
+    }
+    cout << "J'aurais fais mieux, mais ok" << endl;
+    return false;
+    // Cette fonction parcourt la grille afin de trouver une suite d’au moins 3 nombres identiques
+    // sur la même colonne. Elle renvoie vrai si une telle suite a été trouvée, faux sinon.
+    // Si elle a renvoyée vrai, on a une suite de howMany tous égaux à partir des coordonnées pos.
+}
 
 
 
-
-
-
-void jouer(mat & matrice, size_t taille) //mon main devenait trop chargé c'est plus super lisible, en plus faudra que je puisse répeter.
+void jouer(mat & matrice, size_t taille)
 {
     displayGrid(matrice);
     cout << "selectionner la direction dans laquelle vous déplacer." << endl;
     char direction;
     cin >> direction;
-    unsigned depart = 1;
-    maPosition posDepart = {depart,depart};
+    maPosition posDepart = {2,4};
     makeAMove(matrice,posDepart,direction,taille);
     displayGrid(matrice);
-    unsigned jeux = matrice[pos.abs][pos.ord]
-    if (atLeastThreeInAColumn(matrice, posDepart, jeux))
-    {
-        cout << "Colonnes yahooo!";
-    }
+    unsigned howMany = 0;
+    atLeastThreeInAColumn(matrice, posDepart, howMany);
+    atLeastThreeInARow (matrice, posDepart, howMany);
     // if (atLeastThreeInARow(matrice, posDepart,howMany))
     // {
     //     cout << "lignes yahooo!";
@@ -182,6 +203,8 @@ void jouer(mat & matrice, size_t taille) //mon main devenait trop chargé c'est 
 
 int main()
 {
+    srand(time(0)); //pour que les grilles soient bien aléatoire
+
     couleur (KRouge);
     cout << "Rouge" << endl;
     couleur (KVert);
