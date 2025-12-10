@@ -41,7 +41,7 @@ mat initGrid (mat & grid, const size_t& matSize)
         grid[i].resize(matSize);
         for (size_t j=0; j<matSize; j++) //on passe à travers les cases dans une ligne donc colonnes
         {
-            grid[i][j] = rand()%5;//obtenir un nombre entre 0 et 9 inclus.
+            grid[i][j] = rand()%5;//obtenir un nombre entre 0 et 4 inclus.
         }
         cout << endl;
     }
