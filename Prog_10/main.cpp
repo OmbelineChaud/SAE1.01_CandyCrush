@@ -2,6 +2,7 @@
 #include <vector>
 #include <random>
 #include <ctime>
+#include <cmath>
 
 
 using namespace std;
@@ -9,7 +10,7 @@ using namespace std;
 void clearScreen () {
     cout << "\033[H\033[2J";
 }
-//*
+
 const unsigned KReset   (0);
 const unsigned KNoir    (30);
 const unsigned KRouge   (31); //si je le mets à 41 alors le texte aura un fond rouge.
@@ -40,7 +41,7 @@ mat initGrid (mat & grid, const size_t& matSize)
         grid[i].resize(matSize);
         for (size_t j=0; j<matSize; j++) //on passe à travers les cases dans une ligne donc colonnes
         {
-            grid[i][j] = rand()%6;//obtenir un nombre entre 0 et 9 inclus.
+            grid[i][j] = rand()%5;//obtenir un nombre entre 0 et 9 inclus.
         }
         cout << endl;
     }
@@ -49,21 +50,21 @@ mat initGrid (mat & grid, const size_t& matSize)
 
 void  displayGrid (const mat & grid)
 {
-    const vector<unsigned> lesCouleurs = {KNoir,KRouge,KVert,KJaune,KMAgenta,KCyan};
+    const vector<unsigned> lesCouleurs = {KRouge,KVert,KJaune,KMAgenta,KCyan};
     unsigned KNbCandies = 5;
     // clearScreen();
     for (vector<unsigned> line: grid) //pour toutes les vecteurs unsigned(leslignes), dans grid.
     {
         for (unsigned laCase: line) //pour toutes les cases dans line.
         {
-            if (laCase < 1 || laCase > KNbCandies)
+            if (laCase > KNbCandies)
             {
                 cout << "   ";
             }
             else
             {
-            couleur(lesCouleurs[laCase]+10);
-            cout << " " << laCase << " ";
+                couleur(lesCouleurs[laCase]+10);
+                cout << " " << laCase << " ";
             }
             couleur(KReset);
         }
@@ -89,34 +90,29 @@ mat makeAMove (mat & grid, const maPosition & pos, const char& direction, const 
     unsigned bordmin = 0; //pour les côtés de la matrice haut et gauche
     unsigned bordmax = taille-1; //pour les côtés de la matrice bas et droite
     unsigned coordonnees = grid[pos.ord][pos.abs];
-    if ((direction == haut) && pos.abs != bordmin)
-    {
-        grid[pos.ord][pos.abs] = grid[pos.ord-1][pos.abs];
-        grid[pos.ord-1][pos.abs] = coordonnees;
+    if ((direction == haut) && pos.abs != bordmin){
+        grid[pos.abs][pos.ord] = grid[pos.abs-1][pos.ord];
+        grid[pos.abs-1][pos.ord] = coordonnees;
     }
-    else if ((direction == gauche) && pos.ord != bordmin)
-    {
-        grid[pos.ord][pos.abs] = grid[pos.ord][pos.abs-1];
-        grid[pos.ord][pos.abs-1] = coordonnees;
+    else if ((direction == gauche) && pos.ord != bordmin){
+        grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord-1];
+        grid[pos.abs][pos.ord-1] = coordonnees;
     }
-    if ((direction == bas) && pos.abs != bordmax)
-    {
-        grid[pos.ord][pos.abs] = grid[pos.ord+1][pos.abs];
-        grid[pos.ord+1][pos.abs] = coordonnees;
+    else if ((direction == bas) && pos.abs != bordmax){
+        grid[pos.abs][pos.ord] = grid[pos.abs+1][pos.ord];
+        grid[pos.abs+1][pos.ord] = coordonnees;
     }
-    else if ((direction == droite) && pos.ord != bordmax)
-    {
-        grid[pos.ord][pos.abs] = grid[pos.ord][pos.abs+1];
-        grid[pos.ord][pos.abs+1] = coordonnees;
+    else if ((direction == droite) && pos.ord != bordmax){
+        grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord+1];
+        grid[pos.abs][pos.ord+1] = coordonnees;
     }
-    else
-    {
+    else{
         cout << "entrez une direction valide" << endl;
     }
     return grid;
-// Cette fonction permute, dans la grille,
-// le nombre situé initialement à la position pos (aux coordonnées pos.abs, pos.ord)
-// avec la case de destination selon la valeur du caractère direction.
+    // Cette fonction permute, dans la grille,
+    // le nombre situé initialement à la position pos (aux coordonnées pos.abs, pos.ord)
+    // avec la case de destination selon la valeur du caractère direction.
 }
 
 bool atLeastThreeInAColumn (const mat & grid, maPosition & pos, unsigned& howMany)
@@ -189,7 +185,7 @@ void jouer(mat & matrice, size_t taille)
     cout << "selectionner la direction dans laquelle vous déplacer." << endl;
     char direction;
     cin >> direction;
-    maPosition posDepart = {2,4};
+    maPosition posDepart = {2,2};
     makeAMove(matrice,posDepart,direction,taille);
     displayGrid(matrice);
     unsigned howMany = 0;
