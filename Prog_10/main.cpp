@@ -49,6 +49,7 @@ mat initGrid (mat & grid, const size_t& matSize)
 
 void  displayGrid (const mat & grid)
 {
+    const vector<unsigned> lesCouleurs = {KNoir,KRouge,KVert,KJaune,KMAgenta,KCyan};
     unsigned KNbCandies = 5;
     // clearScreen();
     for (vector<unsigned> line: grid) //pour toutes les vecteurs unsigned(leslignes), dans grid.
@@ -61,11 +62,10 @@ void  displayGrid (const mat & grid)
             }
             else
             {
-            const vector<unsigned> lesCouleurs = {KNoir,KRouge,KVert,KJaune,KMAgenta,KCyan};
             couleur(lesCouleurs[laCase]+10);
             cout << " " << laCase << " ";
-            couleur(KReset);
             }
+            couleur(KReset);
         }
         cout << endl;
     }
@@ -88,26 +88,26 @@ mat makeAMove (mat & grid, const maPosition & pos, const char& direction, const 
 {
     unsigned bordmin = 0; //pour les côtés de la matrice haut et gauche
     unsigned bordmax = taille-1; //pour les côtés de la matrice bas et droite
-    unsigned coordonnees = grid[pos.abs][pos.ord];
-    if ((direction == haut) && pos.ord != bordmin)
+    unsigned coordonnees = grid[pos.ord][pos.abs];
+    if ((direction == haut) && pos.abs != bordmin)
     {
-        grid[pos.abs][pos.ord] = grid[pos.abs-1][pos.ord];
-        grid[pos.abs-1][pos.ord] = coordonnees;
+        grid[pos.ord][pos.abs] = grid[pos.ord-1][pos.abs];
+        grid[pos.ord-1][pos.abs] = coordonnees;
     }
-    else if ((direction == gauche) && pos.abs != bordmin)
+    else if ((direction == gauche) && pos.ord != bordmin)
     {
-        grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord-1];
-        grid[pos.abs][pos.ord-1] = coordonnees;
+        grid[pos.ord][pos.abs] = grid[pos.ord][pos.abs-1];
+        grid[pos.ord][pos.abs-1] = coordonnees;
     }
-    if ((direction == bas) && pos.ord != bordmax)
+    if ((direction == bas) && pos.abs != bordmax)
     {
-        grid[pos.abs][pos.ord] = grid[pos.abs+1][pos.ord];
-        grid[pos.abs+1][pos.ord] = coordonnees;
+        grid[pos.ord][pos.abs] = grid[pos.ord+1][pos.abs];
+        grid[pos.ord+1][pos.abs] = coordonnees;
     }
-    else if ((direction == droite) && pos.abs != bordmax)
+    else if ((direction == droite) && pos.ord != bordmax)
     {
-        grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord+1];
-        grid[pos.abs][pos.ord+1] = coordonnees;
+        grid[pos.ord][pos.abs] = grid[pos.ord][pos.abs+1];
+        grid[pos.ord][pos.abs+1] = coordonnees;
     }
     else
     {
@@ -229,4 +229,3 @@ int main()
 //pour se déplacer, il faut vraiment utiliser zqsd ou azes.
 //Pour le deuxième joueur ne pas utiliser le clavier numérique parce que le prof n'a pas de clavier numérique.
 //Donc privilégié les touches de guacher pour le second joueur.
-
