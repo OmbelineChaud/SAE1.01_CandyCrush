@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <random>
-#include <ctime>
-#include <cmath>
 
 
 using namespace std;
@@ -10,7 +8,7 @@ using namespace std;
 void clearScreen () {
     cout << "\033[H\033[2J";
 }
-//couleurs
+//*
 const unsigned KReset   (0);
 const unsigned KNoir    (30);
 const unsigned KRouge   (31); //si je le mets à 41 alors le texte aura un fond rouge.
@@ -19,14 +17,7 @@ const unsigned KJaune   (33);
 const unsigned KBleu    (34);
 const unsigned KMAgenta (35);
 const unsigned KCyan    (36);
-//mouvements
-const char haut = 'z'; //peut être mis en vector si je veux avoir plus de touches correspondant aux directions.
-const char gauche = 'q';
-const char bas = 's';
-const char droite = 'd';
-//case vide
-const int KImpossible = 9;
-//appel couleur
+
 void couleur (const unsigned & coul) {
     cout << "\033[" << coul <<"m";
 }
@@ -35,8 +26,8 @@ void couleur (const unsigned & coul) {
 typedef vector <unsigned> line; // un type représentant une ligne de la grille
 typedef vector <line> mat; // un type représentant la grille
 struct maPosition {
-    unsigned abs; //colonnes
-    unsigned ord; //lignes
+    unsigned abs;
+    unsigned ord;
 };
 
 // profil de la grille
@@ -48,7 +39,7 @@ mat initGrid (mat & grid, const size_t& matSize)
         grid[i].resize(matSize);
         for (size_t j=0; j<matSize; j++) //on passe à travers les cases dans une ligne donc colonnes
         {
-            grid[i][j] = rand()%5;//obtenir un nombre entre 0 et 4 inclus.
+            grid[i][j] = rand()%6;//obtenir un nombre entre 0 et 9 inclus.
         }
         cout << endl;
     }
@@ -57,23 +48,23 @@ mat initGrid (mat & grid, const size_t& matSize)
 
 void  displayGrid (const mat & grid)
 {
-    const vector<unsigned> lesCouleurs = {KRouge,KVert,KJaune,KMAgenta,KCyan};
-    unsigned KNbCandies = 4;
+    unsigned KNbCandies = 5;
     // clearScreen();
     for (vector<unsigned> line: grid) //pour toutes les vecteurs unsigned(leslignes), dans grid.
     {
         for (unsigned laCase: line) //pour toutes les cases dans line.
         {
-            if (laCase > KNbCandies)
+            if (laCase < 1 || laCase > KNbCandies)
             {
                 cout << "   ";
             }
             else
             {
-                couleur(lesCouleurs[laCase]+10);
-                cout << " " << laCase << " ";
-            }
+            const vector<unsigned> lesCouleurs = {KNoir,KRouge,KVert,KJaune,KMAgenta,KCyan};
+            couleur(lesCouleurs[laCase]+10);
+            cout << " " << laCase << " ";
             couleur(KReset);
+            }
         }
         cout << endl;
     }
@@ -84,142 +75,113 @@ void  displayGrid (const mat & grid)
      * on affiche une case vide, sinon, on affiche le nombre courant.*/
 }
 
+//mouvements
+const char haut = 'z'; //peut être mis en vector si je veux avoir plus de touches correspondant aux directions.
+const char gauche = 'q';
+const char bas = 's';
+const char droite = 'd';
+
 
 //permute l'élément actif avec celui choisi.
 mat makeAMove (mat & grid, const maPosition & pos, const char& direction, const size_t taille)
 {
     unsigned bordmin = 0; //pour les côtés de la matrice haut et gauche
     unsigned bordmax = taille-1; //pour les côtés de la matrice bas et droite
-    unsigned coordonnees = grid[pos.ord][pos.abs];
-    if ((direction == haut) && pos.abs != bordmin){
-        grid[pos.abs][pos.ord] = grid[pos.abs-1][pos.ord];
-        grid[pos.abs-1][pos.ord] = coordonnees;
-    }
-    else if ((direction == gauche) && pos.ord != bordmin){
+    unsigned coordonnees = grid[pos.abs][pos.ord];
+    if ((direction == haut) && pos.ord != bordmin)
+    {
         grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord-1];
         grid[pos.abs][pos.ord-1] = coordonnees;
     }
-    else if ((direction == bas) && pos.abs != bordmax){
-        grid[pos.abs][pos.ord] = grid[pos.abs+1][pos.ord];
-        grid[pos.abs+1][pos.ord] = coordonnees;
+    else if ((direction == gauche) && pos.abs != bordmin)
+    {
+        grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord-1];
+        grid[pos.abs-1][pos.ord] = coordonnees;
     }
-    else if ((direction == droite) && pos.ord != bordmax){
+    if ((direction == bas) && pos.ord != bordmax)
+    {
         grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord+1];
         grid[pos.abs][pos.ord+1] = coordonnees;
     }
-    else{
+    else if ((direction == gauche) && pos.abs != bordmin)
+    {
+        grid[pos.abs][pos.ord] = grid[pos.abs][pos.ord+1];
+        grid[pos.abs+1][pos.ord] = coordonnees;
+    }
+    else
+    {
         cout << "entrez une direction valide" << endl;
     }
     return grid;
-    // Cette fonction permute, dans la grille,
-    // le nombre situé initialement à la position pos (aux coordonnées pos.abs, pos.ord)
-    // avec la case de destination selon la valeur du caractère direction.
+// Cette fonction permute, dans la grille,
+// le nombre situé initialement à la position pos (aux coordonnées pos.abs, pos.ord)
+// avec la case de destination selon la valeur du caractère direction.
 }
 
 bool atLeastThreeInAColumn (const mat & grid, maPosition & pos, unsigned& howMany)
 {
-    for (unsigned i=0; i<grid.size(); ++i) 
+    for (size_t i=0; i<grid.size(); i++) //colonnes
     {
-        howMany =1; //on réinitialise howmany à chaque changement de colonnes, 1 parce qu'on compte le nombre comparé
-        for (unsigned j=0; j<grid.size(); ++j) 
+        for (size_t j=0; j<grid.size(); j++) //lignes
         {
-            unsigned valeurCase = grid[j][i]; //j en abs pour passer en colonne
-            if ((j < grid.size()-1) && (valeurCase == grid[j+1][i])) //grid.size()-1 pour pas faire de débordements.
+            //grid[j][i] // j étant en premier on va passer dans la case i de toutes les lignes(donc colonnes)
+            if ((i < grid.size()-2) && (grid[j][i] == grid[j][i+1]) && (grid[j][i] == grid[j][i+2])) //grid.size()-2 pour pas faire les deux dernières lignes vu qu'on pourra pas avoir une suite de 3 dessus.
             {
-                howMany = howMany+1; // y'a bien une égalité entre deux cases.
-            }
-            else if (howMany > 2)
-            {
-                pos = {j-howMany,i};
-                cout << "YOU DID IT, AMAZING! COL" << j << i << " " << howMany << endl;
-                return true;
-            }
-            else if ((j < grid.size()-1) && (valeurCase != grid[j+1][i]))
-            {
-                howMany = 1; // parce que la suite est interrompue on reprend depuis la nouvelle valeur comparé
+                howMany = {grid[j][i], grid[j][i+1], grid[j][i+2]};
+                return true; // c'est un bool, je peux pas dire combien de combinaisons sont faites.
             }
         }
+        cout << endl;
     }
-    cout << "J'aurais fais mieux, mais ok" << endl;
-    return false;
     // Cette fonction parcourt la grille afin de trouver une suite d’au moins 3 nombres identiques
     // sur la même colonne. Elle renvoie vrai si une telle suite a été trouvée, faux sinon.
     // Si elle a renvoyée vrai, on a une suite de howMany tous égaux à partir des coordonnées pos.
 }
 
-bool atLeastThreeInARow (const mat & grid, maPosition & pos, unsigned& howMany)
-{
-    for (unsigned i=0; i<grid.size(); i++) 
-    {
-        howMany =1; //on réinitialise howmany à chaque changement de lignes, 1 parce qu'on compte le nombre comparé
-        for (unsigned j=0; j<grid.size(); j++) 
-        {
-            unsigned valeurCase = grid[i][j]; // j en ord pour passer en ligne
-            if ((i < grid.size()-1) && (valeurCase == grid[i][j+1])) //grid.size()-1 pour pas faire de débordements.
-            {
-                howMany = howMany+1; // y'a bien une égalité entre deux cases.
-            }
-            else if (howMany > 2)
-            {
-                pos = {i,j-howMany};
-                cout << "YOU DID IT, AMAZING! ROW" << i << j << " " << howMany << endl;
-                return true;
-            }
-            else if ((i < grid.size()-1) && (valeurCase != grid[i][j+1]))
-            {
-                howMany = 1; // parce que la suite est interrompue on reprend depuis la nouvelle valeur comparé
-            }
-        }
-    }
-    cout << "J'aurais fais mieux, mais ok" << endl;
-    return false;
-    // Cette fonction parcourt la grille afin de trouver une suite d’au moins 3 nombres identiques
-    // sur la même colonne. Elle renvoie vrai si une telle suite a été trouvée, faux sinon.
-    // Si elle a renvoyée vrai, on a une suite de howMany tous égaux à partir des coordonnées pos.
-}
-
-void removalInColumn (mat & grid, const maPosition & pos, unsigned& howMany)
-{
-    for (int i(pos.abs); i>0; --i){
-        cout << howMany;
-        grid[pos.abs+i][pos.ord] = grid[pos.abs+i-howMany][pos.ord];
-        grid[pos.abs+i][pos.ord] = KImpossible;
-    }
-}
-
-// void removalInRow (mat & grid, const maPosition & pos, unsigned  howMany)
+// bool atLeastThreeInARow (const mat & grid, maPosition & pos, unsigned & howMany)
 // {
-
+//     for (size_t i=0; i<grid.size(); i++) //lignes
+//     {
+//         for (size_t j=0; j<grid.size(); j++) //colonnes
+//         {
+//             if ((j < grid.size()-2) && (grid[i][j] == grid[i][j+1]) && (grid[i][j] == grid[i][j+2]))
+//             {
+//                 howMany = {grid[i][j], grid[i][j+1], grid[i][j+2]};
+//                 return true; // c'est un bool, je peux pas dire combien de combinaisons sont faites.
+//             }
+//         }
+//         cout << endl;
+//     }
 // }
 
 
-void jouer(mat & matrice, size_t taille)
+
+
+
+
+void jouer(mat & matrice, size_t taille) //mon main devenait trop chargé c'est plus super lisible, en plus faudra que je puisse répeter.
 {
     displayGrid(matrice);
     cout << "selectionner la direction dans laquelle vous déplacer." << endl;
     char direction;
     cin >> direction;
-    maPosition posDepart = {2,2};
+    unsigned depart = 1;
+    maPosition posDepart = {depart,depart};
     makeAMove(matrice,posDepart,direction,taille);
     displayGrid(matrice);
-    unsigned howMany = 0;
-    if (atLeastThreeInAColumn(matrice, posDepart, howMany)){
-        cout << "colonne" << endl;
-        //on supprime la colonne
-        removalInColumn(matrice, posDepart, howMany);
+    unsigned jeux = matrice[pos.abs][pos.ord];
+    if (atLeastThreeInAColumn(matrice, posDepart, jeux))
+    {
+        cout << "Colonnes yahooo!";
     }
-    // if (atLeastThreeInARow (matrice, posDepart, howMany)){
-    //     cout << "ligne" << endl;
-    //     //on supprime la ligne
-    //     removalInRow(matrice,posDepart, howMany);
+    // if (atLeastThreeInARow(matrice, posDepart,howMany))
+    // {
+    //     cout << "lignes yahooo!";
     // }
-    displayGrid(matrice);
 }
 
 int main()
 {
-    srand(time(0)); //pour que les grilles soient bien aléatoire
-
     couleur (KRouge);
     cout << "Rouge" << endl;
     couleur (KVert);
@@ -244,3 +206,4 @@ int main()
 //pour se déplacer, il faut vraiment utiliser zqsd ou azes.
 //Pour le deuxième joueur ne pas utiliser le clavier numérique parce que le prof n'a pas de clavier numérique.
 //Donc privilégié les touches de guacher pour le second joueur.
+
