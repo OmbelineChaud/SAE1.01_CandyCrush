@@ -175,7 +175,18 @@ void applyGravity(mat &grid) {
     }
 }
 
-void cleanGridBeforeGame(mat &grid) {
+void fillNewCandies(mat &grid, const int KNbCandies) {
+    size_t matSize = grid.size();
+    for (size_t j = 0; j < matSize; ++j) {
+        for (size_t i = 0; i < matSize; ++i) {
+            if (grid[i][j] == KImpossible) {
+                grid[i][j] = rand() % KNbCandies + 1;
+            }
+        }
+    }
+}
+
+void cleanGridBeforeGame(mat &grid, const int KNbCandies) {
     maPosition pos;
     unsigned howMany = 0;
     bool found;
@@ -194,6 +205,7 @@ void cleanGridBeforeGame(mat &grid) {
 
         if (found) {
             applyGravity(grid);
+            fillNewCandies(grid, KNbCandies);
         }
     } while (found);
 }
@@ -202,7 +214,6 @@ int main() {
     mat grid;
     unsigned int t_mat = 8;
     int KNbCandies = 6;
-    unsigned nbCoups = 10;
     
     srand(time(NULL)); 
     initGrid(grid, t_mat, KNbCandies);
@@ -210,12 +221,13 @@ int main() {
     displayGrid(grid, colors);
 
     int score = 0;
-    cleanGridBeforeGame(grid);
+    cleanGridBeforeGame(grid, KNbCandies);
     
     unsigned howMany = 0;
 
-    while(nbCoups > 0){
-        cout << "votre score : " << score << " coups restant : " <<nbCoups << endl;
+    while(score < 100){
+        
+        cout << "votre score : " << score << endl;
         displayGrid(grid, colors); 
         
         maPosition pos;
@@ -235,21 +247,31 @@ int main() {
 
         makeAMove(grid, pos, direction);
         
-        while (atLeastThreeInAColumn(grid, pos, howMany)){
-            removalInColumn(grid, pos, howMany);
-            score = score+howMany;
-
-            applyGravity(grid); 
+        bool matched = true;
+        while (matched) {
+            matched = false;
+            
+            while (atLeastThreeInAColumn(grid, pos, howMany)){
+                removalInColumn(grid, pos, howMany);
+                score = score + howMany;
+                matched = true;
+            }
+            
+            while (atLeastThreeInARow(grid, pos, howMany))
+            {
+                removalInRow(grid, pos, howMany);
+                score = score + howMany;
+                matched = true;
+            }
+            
+            if (matched) {
+                applyGravity(grid); 
+                fillNewCandies(grid, KNbCandies);
+                
+                cout << "Match trouvé! Score: " << score << endl;
+                displayGrid(grid, colors); 
+            }
         }
-        
-        while (atLeastThreeInARow(grid, pos, howMany))
-        {
-            removalInRow(grid, pos, howMany);
-            score = score+howMany;
-            applyGravity(grid);
-        }
-        
-        --nbCoups;
     }
     
     cout << "Fin du jeu ! Votre score final est : " << score << endl;
