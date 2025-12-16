@@ -155,7 +155,7 @@ void applyGravity(mat &grid) {
     size_t matSize = grid.size();
 
     for (size_t j = 0; j < matSize; ++j) {
-        std::vector<unsigned> non_impossible_candies;
+        vector<unsigned> non_impossible_candies;
         
         for (size_t i = 0; i < matSize; ++i) {
             if (grid[i][j] != KImpossible) {
