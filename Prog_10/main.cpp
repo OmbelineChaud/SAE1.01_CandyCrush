@@ -211,11 +211,14 @@ int main() {
     
     srand(time(NULL)); 
     initGrid(grid, t_mat, KNbCandies);
-    cout << "voici la grille de jeu" << endl;
-    displayGrid(grid, colors);
-
     int score = 0;
     cleanGridBeforeGame(grid); //on vérifie qu'il n'y ait pas déjà des alignements de 3 
+    displayGrid(grid, colors);
+    string answer = "non";
+    while (answer != "oui"){
+        cout << "Bienvenue sur Candy Crush! Voici votre grille de jeu!" << endl << "Vous ne pouvez pas sortir, si vous essayez, le tour sera passé. Et si votre entrée est invalide, cela provoquera l'arrêt du jeux." << endl << "entrez 'oui' afin de continuer" << endl;
+        cin >> answer;
+    }
     
     unsigned howMany = 0;
 
@@ -253,4 +256,5 @@ int main() {
     couleur(KReset);
     return 0;
 }
+
 
