@@ -253,6 +253,3 @@ int main() {
     couleur(KReset);
     return 0;
 }
-
-
-
