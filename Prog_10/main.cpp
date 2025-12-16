@@ -139,8 +139,8 @@ bool atLeastThreeInARow(const mat &grid, maPosition &pos, unsigned &howMany) {
 
 void removalInColumn(mat &grid, const maPosition &pos, unsigned howMany) {
     unsigned col = pos.abs;
-    int start = pos.ord+1; /*le +1 c'est parce que la valeur enregistré en abscisse est celle une fois que la suite est fini*/
-    int end = start + (int)howMany-1;
+    int start = pos.ord; /*le +1 c'est parce que la valeur enregistré est celle une fois que la suite est fini*/
+    int end = start + (int)howMany;//int entre parenthèse met howManny à une valeur numérique int.
     //on met les éléments à supprimer à valeur KImpossible
     for (int i=start; i<=end; ++i){
         grid[i][col] = KImpossible;
@@ -159,8 +159,8 @@ void removalInColumn(mat &grid, const maPosition &pos, unsigned howMany) {
 
 void removalInRow(mat &grid, const maPosition &pos, unsigned howMany) {
     unsigned ligne = pos.ord; //similaire à removalInColumn
-    int start = pos.abs+1; 
-    int end = start + (int)howMany-1;
+    int start = pos.abs; 
+    int end = start + (int)howMany; //int entre parenthèse met howManny à une valeur numérique int.
     //on met les éléments à supprimer à valeur KImpossible
     for (int i=start; i<=end; ++i){
         grid[ligne][i] = KImpossible;
@@ -188,6 +188,7 @@ void cleanGridBeforeGame(mat &grid) {
         
         if (atLeastThreeInAColumn(grid, pos, howMany)) {
             removalInColumn(grid, pos, howMany);
+
             found = true;
         }
         else if (atLeastThreeInARow(grid, pos, howMany)) {
@@ -199,6 +200,7 @@ void cleanGridBeforeGame(mat &grid) {
         }
     } while (found);
 }
+
 
 int main() {
     mat grid;
