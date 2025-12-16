@@ -161,7 +161,7 @@ void removalInColumn(mat &grid, const maPosition &pos, unsigned &howMany) {
 }
 
 void removalInRow(mat &grid, const maPosition &pos, unsigned &howMany) {
-    unsigned ligne = pos.ord; //similaire à removalInColumn
+    int ligne = pos.ord; //similaire à removalInColumn
     int start = pos.abs; 
     int end = start + (int)howMany-1; //int entre parenthèse met howManny à une valeur numérique int.
     //on met les éléments à supprimer à valeur KImpossible
@@ -256,5 +256,6 @@ int main() {
     couleur(KReset);
     return 0;
 }
+
 
 
