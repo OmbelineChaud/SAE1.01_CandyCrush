@@ -67,7 +67,7 @@ void displayGrid(const mat &grid, const vector<unsigned> &colors) {
                 cout << "   ";
             }
             else {
-                couleur(colors[grid[i][j] - 1] + 10); 
+                couleur(colors[grid[i][j]] + 10); 
                 cout << " " << grid[i][j] << " ";
                 couleur(KReset);
             }
