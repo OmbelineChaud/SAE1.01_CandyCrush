@@ -35,9 +35,9 @@ void clearScreen() {
 }
 
 void initGrid(mat &grid, const size_t &matSize, const int KNbCandies) {
-    grid.resize(matSize);
+    grid.resize(matSize);  //on redimensionne le nombre de lignes.
     for (size_t i = 0; i < matSize; ++i) {
-        grid[i].resize(matSize);
+        grid[i].resize(matSize); //on doit redimensionner le nombre de colonnes de chaque ligne.
         for (size_t j = 0; j < matSize; ++j)
             grid[i][j] = rand() % KNbCandies + 1;
     }
@@ -73,7 +73,7 @@ void makeAMove(mat &grid, maPosition &pos, const char &direction) {
     size_t i = pos.ord;
     size_t j = pos.abs;
     size_t matSize = grid.size();
-
+    //on regarde dans toutes les directions autorisées.
     if ((direction == 'z' || direction == 'Z') && i > 0) {
         swap(grid[i][j], grid[i - 1][j]);
         pos.ord--;
@@ -90,6 +90,7 @@ void makeAMove(mat &grid, maPosition &pos, const char &direction) {
         swap(grid[i][j], grid[i][j + 1]);
         pos.abs++;
     }
+    //la direction donnée n'était pas valide.
     else {
         cout << "Coup invalide ou hors des limites !" << endl;
     }
@@ -98,15 +99,16 @@ void makeAMove(mat &grid, maPosition &pos, const char &direction) {
 bool atLeastThreeInAColumn(const mat &grid, maPosition &pos, unsigned &howMany) {
     for (unsigned j = 0; j < grid[0].size(); ++j) { 
         for (unsigned i = 0; i <= grid.size() - 3; ++i) { 
-            if (grid[i][j] == KImpossible) continue; // i en ord pour passer dans les colonnes
-            
+            if (grid[i][j] == KImpossible) continue; //pour ne pas considérer une suite de KImpossible comme une suite.
+            //on réinitialise la longueur de suite qui pouvait être enregistré.
             howMany = 1;
             size_t k = i + 1;
+            //on regarde la longueur de la suite.
             while (k < grid.size() && grid[i][j] == grid[k][j]) {
                 ++howMany;
                 ++k;
             }
-            
+            //si la suite est d'au moins 3 de long.
             if (howMany >= 3) {
                 pos = {i,j};
                 return true;
@@ -119,15 +121,16 @@ bool atLeastThreeInAColumn(const mat &grid, maPosition &pos, unsigned &howMany) 
 bool atLeastThreeInARow(const mat &grid, maPosition &pos, unsigned &howMany) {
     for (unsigned i = 0; i < grid.size(); ++i) { 
         for (unsigned j = 0; j <= grid[i].size() - 3; ++j) { 
-            if (grid[i][j] == KImpossible) continue;
-            
-            howMany = 1;
+            if (grid[i][j] == KImpossible) continue; //pour ne pas considérer une suite de KImpossible comme une suite.
+            //on réinitialise la longueur de suite qui pouvait être enregistré.
+            howMany = 1; 
             size_t k = j + 1;
+            //on regarde la longueur de la suite.
             while (k < grid[i].size() && grid[i][j] == grid[i][k]) {
                 ++howMany;
                 ++k;
             }
-            
+            //si la suite est d'au moins 3 de long.
             if (howMany >= 3) {
                 pos = {i,j};
                 return true;
@@ -137,7 +140,7 @@ bool atLeastThreeInARow(const mat &grid, maPosition &pos, unsigned &howMany) {
     return false;
 }
 
-void removalInColumn(mat &grid, const maPosition &pos, unsigned howMany) {
+void removalInColumn(mat &grid, const maPosition &pos, unsigned &howMany) {
     unsigned col = pos.abs;
     int start = pos.ord;
     int end = start + (int)howMany;//int entre parenthèse met howManny à une valeur numérique int.
@@ -157,7 +160,7 @@ void removalInColumn(mat &grid, const maPosition &pos, unsigned howMany) {
     }
 }
 
-void removalInRow(mat &grid, const maPosition &pos, unsigned howMany) {
+void removalInRow(mat &grid, const maPosition &pos, unsigned &howMany) {
     unsigned ligne = pos.ord; //similaire à removalInColumn
     int start = pos.abs; 
     int end = start + (int)howMany; //int entre parenthèse met howManny à une valeur numérique int.
@@ -182,13 +185,11 @@ void cleanGridBeforeGame(mat &grid) {
     maPosition pos;
     unsigned howMany = 0;
     bool found;
-
     do {
         found = false;
         
         if (atLeastThreeInAColumn(grid, pos, howMany)) {
             removalInColumn(grid, pos, howMany);
-
             found = true;
         }
         else if (atLeastThreeInARow(grid, pos, howMany)) {
@@ -214,7 +215,7 @@ int main() {
     displayGrid(grid, colors);
 
     int score = 0;
-    cleanGridBeforeGame(grid);
+    cleanGridBeforeGame(grid); //on vérifie qu'il n'y ait pas déjà des alignements de 3 
     
     unsigned howMany = 0;
 
@@ -224,9 +225,7 @@ int main() {
         
         maPosition pos;
         char direction;
-        cout << "Selectionnez la ligne (entre 0 et " << t_mat-1
-        << "), puis la colonne (entre 0 et " << t_mat-1
-        << "), puis la direction (z/q/s/d)" << endl;
+        cout << "Selectionnez la ligne (entre 0 et " << t_mat-1 << "), puis la colonne (entre 0 et " << t_mat-1 << "), puis la direction (z/q/s/d)" << endl;
         
         if (!(cin >> pos.ord >> pos.abs >> direction)) {
              cout << "Erreur de saisie. Fin du jeu." << endl;
@@ -243,13 +242,10 @@ int main() {
             removalInColumn(grid, pos, howMany);
             score = score+howMany;
         }
-        
-        while (atLeastThreeInARow(grid, pos, howMany))
-        {
+        while (atLeastThreeInARow(grid, pos, howMany)){
             removalInRow(grid, pos, howMany);
             score = score+howMany;
         }
-        
         --nbCoups;
     }
     
@@ -257,4 +253,5 @@ int main() {
     couleur(KReset);
     return 0;
 }
+
 
