@@ -139,7 +139,7 @@ bool atLeastThreeInARow(const mat &grid, maPosition &pos, unsigned &howMany) {
 
 void removalInColumn(mat &grid, const maPosition &pos, unsigned howMany) {
     unsigned col = pos.abs;
-    int start = pos.ord; /*le +1 c'est parce que la valeur enregistré est celle une fois que la suite est fini*/
+    int start = pos.ord;
     int end = start + (int)howMany;//int entre parenthèse met howManny à une valeur numérique int.
     //on met les éléments à supprimer à valeur KImpossible
     for (int i=start; i<=end; ++i){
@@ -152,7 +152,7 @@ void removalInColumn(mat &grid, const maPosition &pos, unsigned howMany) {
         while (j > start && grid[j-1][col] == KImpossible){
             grid[j-1][col] = grid[j][col];
             grid[j][col] = KImpossible;
-            j--;
+            --j;
         }
     }
 }
@@ -257,3 +257,4 @@ int main() {
     couleur(KReset);
     return 0;
 }
+
