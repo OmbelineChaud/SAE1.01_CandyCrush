@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <ctime>
+#include <cmath>
 
 using namespace std;
 
@@ -14,16 +15,22 @@ struct maPosition {
     unsigned abs;
 };
 
-const unsigned KReset     = 0;
-const unsigned KNoir      = 30;
-const unsigned KRouge     = 31;
-const unsigned KVert      = 32;
-const unsigned KJaune     = 33;
-const unsigned KBleu      = 34;
-const unsigned KMAgenta   = 35;
-const unsigned KCyan      = 36;
-const unsigned KImpossible = 0;
-const unsigned KNbCandies = 6;
+const unsigned KReset      = 0;
+const unsigned KNoir       = 30;
+const unsigned KRouge      = 31;
+const unsigned KVert       = 32;
+const unsigned KJaune      = 33;
+const unsigned KBleu       = 34;
+const unsigned KMAgenta    = 35;
+const unsigned KCyan       = 36;
+const unsigned KImpossible = 0; //emplacement vide
+const unsigned KNbCandies  = 6; //bonbon
+//mouvements admis
+vector<char> haut   = {'z', 'Z', 'i', 'I'};
+vector<char> droite = {'d', 'D', 'l', 'L'};
+vector<char> gauche = {'q', 'Q', 'j', 'J'};
+vector<char> bas    = {'s', 'S', 'k', 'K'};
+
 
 vector<unsigned> colors = {KNoir, KRouge, KVert, KJaune, KBleu, KMAgenta, KCyan};
 
@@ -35,7 +42,7 @@ void clearScreen() {
     cout << "\033[H\033[2J";
 }
 
-void initGrid(mat &grid, const size_t &matSize, const int KNbCandies) {
+void initGrid(mat &grid, const size_t &matSize) {
     grid.resize(matSize);  //on redimensionne le nombre de lignes.
     for (size_t i = 0; i < matSize; ++i) {
         grid[i].resize(matSize); //on doit redimensionner le nombre de colonnes de chaque ligne.
@@ -75,19 +82,20 @@ void makeAMove(mat &grid, maPosition &pos, const char &direction) {
     size_t j = pos.abs;
     size_t matSize = grid.size();
     //on regarde dans toutes les directions autorisées.
-    if ((direction == 'z' || direction == 'Z') && i > 0) {
+    //on utilise find() pour parcourir les vecteurs de mouvement et trouver une correspondance.
+    if (find(haut.begin(), haut.end(), direction) != haut.end() && i > 0){
         swap(grid[i][j], grid[i - 1][j]);
         pos.ord--;
     }
-    else if ((direction == 's' || direction == 'S') && i < matSize - 1) {
+    else if ((find(bas.begin(), bas.end(), direction) != bas.end()) && i < matSize - 1) {
         swap(grid[i][j], grid[i + 1][j]);
         pos.ord++;
     }
-    else if ((direction == 'q' || direction == 'Q') && j > 0) {
+    else if (find(gauche.begin(), gauche.end(), direction) != gauche.end() && j > 0) {
         swap(grid[i][j], grid[i][j - 1]);
         pos.abs--;
     }
-    else if ((direction == 'd' || direction == 'D') && j < matSize - 1) {
+    else if (find(droite.begin(), droite.end(), direction) != droite.end() && j < matSize - 1) {
         swap(grid[i][j], grid[i][j + 1]);
         pos.abs++;
     }
@@ -184,10 +192,11 @@ void removalInRow(mat &grid, const maPosition &pos, unsigned &howMany) {
 
 
 void fullGrid(mat &grid){
-    for (unsigned i(0); i < grid.size()-1; ++i){
-        for (unsigned j(0); j < grid.size()-1; ++j)
-        if(grid[i][j] == KImpossible){
-            grid[i][j] = rand() %KNbCandies + 1;
+    for (size_t i(0); i < grid.size(); ++i){
+        for (size_t j(0); j < grid.size(); ++j){
+            if(grid[i][j] == KImpossible){
+                grid[i][j] = rand() %KNbCandies + 1;
+            }
         }
     }
 }
@@ -218,33 +227,46 @@ void cleanGridBeforeGame(mat &grid) {
 int main() {
     mat grid;
     unsigned int t_mat = 8;
-    unsigned nbCoups = 10;
-    
-    srand(time(NULL)); 
-    initGrid(grid, t_mat, KNbCandies);
-    cout << "voici la grille de jeu" << endl;
-    displayGrid(grid, colors);
+    unsigned nbCoups = 20; //nombre de coup qui peuvent être jouer à un de plus pour affichage
+    maPosition pos;
+    char direction;
 
+    srand(time(NULL)); 
+    initGrid(grid, t_mat);
+
+    int score_joueur1 = 0;
+    int score_joueur2 = 0;
     int score = 0;
     cleanGridBeforeGame(grid); //on vérifie qu'il n'y ait pas déjà des alignements de 3 
-    
+    displayGrid(grid, colors);
+    string answer = "non";
+    while (answer != "oui"){
+        cout << "Bienvenue sur Candy Crush PVP! Voici votre grille de jeu!" << endl << "Vous ne pouvez pas sortir, si vous essayez, le tour sera passé. Et si votre entrée est invalide, cela provoquera l'arrêt du jeux." << endl << "entrez 'oui' afin de continuer" << endl;
+        cin >> answer;
+    }
     unsigned howMany = 0;
 
     while(nbCoups > 0){
-        cout << "votre score : " << score << " coups restant : " <<nbCoups << endl;
         displayGrid(grid, colors); 
-        
-        maPosition pos;
-        char direction;
-        cout << "Selectionnez la ligne (entre 0 et " << t_mat-1 << "), puis la colonne (entre 0 et " << t_mat-1 << "), puis la direction (z/q/s/d)" << endl;
+        if (nbCoups%2==0){
+            score = score_joueur1; //le score prend la valeur du score du joueur qui joue.
+            cout << "Tour Joueur 1" << endl; //on prévient quel joueur doit jouer.
+        }
+        else { //si c'est pas pair, c'est impair
+            score = score_joueur2;
+            cout << "Tour Joueur 2" << endl;
+        }
+        cout << "Votre score : " << score << ",  et le nombre de coup(s) qu'il vous reste à jouer : " << (int)ceil(nbCoups/2.0) << endl;
+
+        cout << "Selectionnez la ligne (entre 0 et " << t_mat-1 << "), puis sélectionnez la colonne (entre 0 et " << t_mat-1 << "), puis la direction joueur1:(z/q/s/d) joueur2:(i/j/k/l) d'après un format (haut/gauche/bas/droite)" << endl;
         
         if (!(cin >> pos.ord >> pos.abs >> direction)) {
-             cout << "Erreur de saisie. Fin du jeu." << endl;
-             break;
+            cout << "Erreur de saisie. Fin du jeu." << endl;
+            break;
         }
         if (pos.ord >= t_mat || pos.abs >= t_mat) {
-             cout << "Position hors limites. Reessayez." << endl;
-             continue;
+            cout << "Position hors limites. Reessayez." << endl;
+            continue;
         }
 
         makeAMove(grid, pos, direction);
@@ -257,10 +279,26 @@ int main() {
             removalInRow(grid, pos, howMany);
             score = score+howMany;
         }
+        //on sauvegarde le score sur le joueur qui vient de jouer.
+        if (nbCoups%2==0){
+            score_joueur1 = score;
+        }
+        else {
+            score_joueur2 = score;
+        }
         --nbCoups;
     }
-    
-    cout << "Fin du jeu ! Votre score final est : " << score << endl;
+    clearScreen();
+    cout << "Fin du jeu ! Le score final du joueur 1 est " << score_joueur1 << endl << "Le score final du joueur 2 est " << score_joueur2 << endl;
+    if (score_joueur1 == score_joueur2) {
+        cout << "C'est une égalité !" << endl;
+    }
+    else if (score_joueur1 > score_joueur2) {
+        cout << "Joueur 1 a gagné !" << endl;
+    }
+    else { // si c'est pas une égalité et que joueur 1 n'a pas un score supérieur alors c'est joueur 2 qui a gagné.
+        cout << "Joueur 2 a gagné !" << endl;
+    }
     couleur(KReset);
     return 0;
 }
