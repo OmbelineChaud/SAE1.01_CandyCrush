@@ -204,6 +204,15 @@ void cleanGridBeforeGame(mat &grid) {
     } while (found);
 }
 
+void fullGrid(mat &grid){
+    for (size_t i(0); i < grid.size(); ++i){
+        for (size_t j(0); j < grid.size(); ++j){
+            if(grid[i][j] == KImpossible){
+                grid[i][j] = rand() %KNbCandies + 1;
+            }
+        }
+    }
+}
 
 int main() {
     mat grid;
@@ -257,3 +266,4 @@ int main() {
     couleur(KReset);
     return 0;
 }
+
