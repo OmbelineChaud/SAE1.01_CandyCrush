@@ -14,15 +14,16 @@ struct maPosition {
     unsigned abs;
 };
 
-const unsigned KReset     = 0;
-const unsigned KNoir      = 30;
-const unsigned KRouge     = 31;
-const unsigned KVert      = 32;
-const unsigned KJaune     = 33;
-const unsigned KBleu      = 34;
-const unsigned KMAgenta   = 35;
-const unsigned KCyan      = 36;
+const unsigned KReset      = 0;
+const unsigned KNoir       = 30;
+const unsigned KRouge      = 31;
+const unsigned KVert       = 32;
+const unsigned KJaune      = 33;
+const unsigned KBleu       = 34;
+const unsigned KMAgenta    = 35;
+const unsigned KCyan       = 36;
 const unsigned KImpossible = 0;
+const int      KNbCandies  = 6;
 
 vector<unsigned> colors = {KNoir, KRouge, KVert, KJaune, KBleu, KMAgenta, KCyan};
 
@@ -73,7 +74,7 @@ void makeAMove(mat &grid, maPosition &pos, const char &direction) {
     size_t i = pos.ord;
     size_t j = pos.abs;
     size_t matSize = grid.size();
-    //on vérifie que le joueur n'essaye pas de déplacer une case vide.    
+    //on vérifie que le joueur n'essaye pas de déplacer une case vide.
     if (grid[i][j] == KImpossible);
     //on regarde dans toutes les directions autorisées.
     else if ((direction == 'z' || direction == 'Z') && i > 0 && grid[i-1][j] !=KImpossible){
@@ -183,27 +184,6 @@ void removalInRow(mat &grid, const maPosition &pos, unsigned &howMany) {
     }
 }
 
-void cleanGridBeforeGame(mat &grid) {
-    maPosition pos;
-    unsigned howMany = 0;
-    bool found;
-    do {
-        found = false;
-
-        if (atLeastThreeInAColumn(grid, pos, howMany)) {
-            removalInColumn(grid, pos, howMany);
-            found = true;
-        }
-        else if (atLeastThreeInARow(grid, pos, howMany)) {
-            removalInRow(grid, pos, howMany);
-            found = true;
-        }
-        else {
-            found = false;
-        }
-    } while (found);
-}
-
 void fullGrid(mat &grid){
     for (size_t i(0); i < grid.size(); ++i){
         for (size_t j(0); j < grid.size(); ++j){
@@ -212,6 +192,27 @@ void fullGrid(mat &grid){
             }
         }
     }
+}
+
+void cleanGridBeforeGame(mat &grid) {
+    maPosition pos;
+    unsigned howMany = 0;
+    bool found;
+    do {
+        if (atLeastThreeInAColumn(grid, pos, howMany)) {
+            removalInColumn(grid, pos, howMany);
+            fullGrid(grid);
+            found = true;
+        }
+        else if (atLeastThreeInARow(grid, pos, howMany)) {
+            removalInRow(grid, pos, howMany);
+            fullGrid(grid);
+            found = true;
+        }
+        else {
+            found = false;
+        }
+    } while (found);
 }
 
 int main() {
@@ -266,4 +267,3 @@ int main() {
     couleur(KReset);
     return 0;
 }
-
