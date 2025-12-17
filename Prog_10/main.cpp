@@ -73,8 +73,9 @@ void makeAMove(mat &grid, maPosition &pos, const char &direction) {
     size_t i = pos.ord;
     size_t j = pos.abs;
     size_t matSize = grid.size();
-    //on regarde dans toutes les directions autorisées.
+    //on vérifie que le joueur n'essaye pas de déplacer une case vide.    
     if (grid[i][j] == KImpossible);
+    //on regarde dans toutes les directions autorisées.
     else if ((direction == 'z' || direction == 'Z') && i > 0 && grid[i-1][j] !=KImpossible){
         swap(grid[i][j], grid[i-1][j]);
         pos.ord--;
@@ -87,7 +88,7 @@ void makeAMove(mat &grid, maPosition &pos, const char &direction) {
         swap(grid[i][j], grid[i][j-1]);
         pos.abs--;
     }
-    else if ((direction == 'd' || direction == 'D') && j < matSize - 1 && grid[i][j+1] !=KImpossible){
+    else if ((direction == 'd' || direction == 'D') && j < matSize-1 && grid[i][j+1] !=KImpossible){
         swap(grid[i][j], grid[i][j+1]);
         pos.abs++;
     }
