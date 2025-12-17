@@ -78,21 +78,23 @@ void makeAMove(mat &grid, maPosition &pos, const char &direction) {
     size_t i = pos.ord;
     size_t j = pos.abs;
     size_t matSize = grid.size();
+    //on vérifie que le joueur n'essaye pas de déplacer une case vide.    
+    if (grid[i][j] == KImpossible);
     //on regarde dans toutes les directions autorisées.
-    if ((direction == 'z' || direction == 'Z') && i > 0) {
-        swap(grid[i][j], grid[i - 1][j]);
+    else if ((direction == 'z' || direction == 'Z') && i > 0 && grid[i-1][j] !=KImpossible){
+        swap(grid[i][j], grid[i-1][j]);
         pos.ord--;
     }
-    else if ((direction == 's' || direction == 'S') && i < matSize - 1) {
-        swap(grid[i][j], grid[i + 1][j]);
+    else if ((direction == 's' || direction == 'S') && i < matSize-1 && grid[i+1][j] !=KImpossible){
+        swap(grid[i][j], grid[i+1][j]);
         pos.ord++;
     }
-    else if ((direction == 'q' || direction == 'Q') && j > 0) {
-        swap(grid[i][j], grid[i][j - 1]);
+    else if ((direction == 'q' || direction == 'Q') && j > 0 && grid[i][j-1] !=KImpossible){
+        swap(grid[i][j], grid[i][j-1]);
         pos.abs--;
     }
-    else if ((direction == 'd' || direction == 'D') && j < matSize - 1) {
-        swap(grid[i][j], grid[i][j + 1]);
+    else if ((direction == 'd' || direction == 'D') && j < matSize-1 && grid[i][j+1] !=KImpossible){
+        swap(grid[i][j], grid[i][j+1]);
         pos.abs++;
     }
     //la direction donnée n'était pas valide.
@@ -254,7 +256,7 @@ int main() {
     displayGrid(grid, colors);
     string answer = "non";
     while (answer != "oui"){
-        cout << "Bienvenue sur Candy Crush! Voici votre grille de jeu!" << endl << "Vous ne pouvez pas sortir, si vous essayez, le tour sera passé. Et si votre entrée est invalide, cela provoquera l'arrêt du jeux." << endl << "entrez 'oui' afin de continuer" << endl;
+        cout << "Bienvenue sur Candy Crush! Voici votre grille de jeu!" << endl << "Vous ne pouvez pas sortir, ni échanger avec une case vide, si vous essayez, le tour sera passé. Et si votre entrée est invalide, cela provoquera l'arrêt du jeux." << endl << "entrez 'oui' afin de continuer" << endl;
         cin >> answer;
     }
     
