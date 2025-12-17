@@ -35,7 +35,7 @@ void clearScreen() {
     cout << "\033[H\033[2J";
 }
 
-void initGrid(mat &grid, const size_t &matSize, const int KNbCandies) {
+void initGrid(mat &grid, const size_t &matSize) {
     grid.resize(matSize);  //on redimensionne le nombre de lignes.
     for (size_t i = 0; i < matSize; ++i) {
         grid[i].resize(matSize); //on doit redimensionner le nombre de colonnes de chaque ligne.
@@ -218,11 +218,10 @@ void cleanGridBeforeGame(mat &grid) {
 int main() {
     mat grid;
     unsigned int t_mat = 8;
-    int KNbCandies = 6;
     unsigned nbCoups = 10;
 
     srand(time(NULL));
-    initGrid(grid, t_mat, KNbCandies);
+    initGrid(grid, t_mat);
     int score = 0;
     cleanGridBeforeGame(grid); //on vérifie qu'il n'y ait pas déjà des alignements de 3
     displayGrid(grid, colors);
@@ -267,3 +266,4 @@ int main() {
     couleur(KReset);
     return 0;
 }
+
