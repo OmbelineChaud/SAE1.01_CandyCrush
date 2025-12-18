@@ -1,0 +1,35 @@
+-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+
+  /$$$$$$                            /$$           
+ /$$__  $$                          | $$            
+| $$  \__/  /$$$$$$  /$$$$$$$   /$$$$$$$ /$$   /$$  
+| $$       |____  $$| $$__  $$ /$$__  $$| $$  | $$  
+| $$        /$$$$$$$| $$  \ $$| $$  | $$| $$  | $$  
+| $$    $$ /$$__  $$| $$  | $$| $$  | $$| $$  | $$  
+|  $$$$$$/|  $$$$$$$| $$  | $$|  $$$$$$$|  $$$$$$$  
+ \______/  \_______/|__/  |__/ \_______/ \____  $$  
+                                         /$$  | $$  
+                                        |  $$$$$$/  
+                                         \______/      /$$      
+                                                       | $$      
+                 /$$$$$$$  /$$$$$$  /$$   /$$  /$$$$$$$| $$$$$$$ 
+                /$$_____/ /$$__  $$| $$  | $$ /$$_____/| $$__  $$
+               | $$      | $$  \__/| $$  | $$|  $$$$$$ | $$  \ $$
+               | $$      | $$      | $$  | $$ \____  $$| $$  | $$
+               |  $$$$$$$| $$      |  $$$$$$/ /$$$$$$$/| $$  | $$
+                \_______/|__/       \______/ |_______/ |__/  |__/
+                                                        
+-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° °
+Bonjour, Bienvenue sur Candy Crush version wish.
+Voici les règles de notre version visuellement pourrie:
+1-Vous ne pouvez pas sortir de la grille. 
+2-Vous ne pouvez pas échanger avec une case vide.
+En cas de non respect des règles, votre tour sautera.
+Et si votre entrée est invalide, cela provoquera l'arrêt du jeux.
+Comment intéragir?
+Vous avez deux choix de déplacements (z/q/s/d) et (i/j/k/l),
+afin de pouvoir profiter du jeu avec vos amis.  
+Les lettres peuvent être en majuscule ou minuscule. 
+Entrez "oui" afin de continuer.
