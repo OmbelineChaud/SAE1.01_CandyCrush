@@ -6,6 +6,7 @@
 #include <ctime>
 #include <fstream>
 #include <iomanip>
+#include "constantes.h"
 
 using namespace std;
 
@@ -17,23 +18,12 @@ struct maPosition {
     unsigned abs;
 };
 
-const unsigned KReset      = 0;
-const unsigned KNoir       = 30;
-const unsigned KRouge      = 31;
-const unsigned KVert       = 32;
-const unsigned KJaune      = 33;
-const unsigned KBleu       = 34;
-const unsigned KMAgenta    = 35;
-const unsigned KCyan       = 36;
-const unsigned KImpossible = 0;
-const int      KNbCandies  = 6;
-
 //mouvements
 vector<char> haut   = {'z', 'Z', 'i', 'I'};
 vector<char> droite = {'d', 'D', 'l', 'L'};
 vector<char> gauche = {'q', 'Q', 'j', 'J'};
 vector<char> bas    = {'s', 'S', 'k', 'K'};
-
+//liste des couleurs
 vector<unsigned> colors = {KNoir, KRouge, KVert, KJaune, KBleu, KMAgenta, KCyan};
 
 void couleur(const unsigned &coul) {
@@ -226,6 +216,14 @@ void cleanGridBeforeGame(mat &grid) {
     } while (found);
 }
 
+void affichage(ifstream &fichier){
+    string ligne;
+    while (getline (fichier, ligne))
+    {
+        cout << ligne << endl;
+    }
+}
+
 void progCandyCrush(){
     unsigned nbCoups = 10;
     mat grid;
@@ -235,15 +233,6 @@ void progCandyCrush(){
     int score = 0;
     cleanGridBeforeGame(grid); //on vérifie qu'il n'y ait pas déjà des alignements de 3
     displayGrid(grid, colors);
-    string answer = "non";
-    while (answer != "oui"){
-        cout << "Bienvenue sur Candy Crush Basic! Voici votre grille de jeu!"
-             << endl << "Vous ne pouvez pas sortir de la grille, ni échanger avec une case vide, "
-                "si vous essayez, le tour sera passé. Et si votre entrée est invalide, "
-                "cela provoquera l'arrêt du jeux." << endl << "entrez 'oui' afin de continuer" << endl;
-        cin >> answer;
-    }
-
     unsigned howMany = 0;
 
     while(nbCoups > 0){
@@ -251,8 +240,8 @@ void progCandyCrush(){
         cout << "votre score : " << score << " coups restant : " <<nbCoups << endl;
         maPosition pos;
         char direction;
-        cout << "Selectionnez la ligne (entre 0 et " << t_mat-1 << "), puis la colonne (entre 0 et " << t_mat-1 << "), puis la direction (z/q/s/d)" << endl;
-
+        ifstream Tour("../../tourDeJeu");
+        affichage(Tour);
         if (!(cin >> pos.ord >> pos.abs >> direction)) {
             cout << "Erreur de saisie. Fin du jeu." << endl;
             break;
@@ -261,7 +250,6 @@ void progCandyCrush(){
             cout << "Position hors limites. Reessayez." << endl;
             continue;
         }
-
         makeAMove(grid, pos, direction);
 
         while (atLeastThreeInAColumn(grid, pos, howMany)){
@@ -296,9 +284,8 @@ void infinityCandyCrush(){
         displayGrid(grid, colors);
         maPosition pos;
         char direction;
-        cout << "Selectionnez la ligne (entre 0 et " << t_mat-1
-             << "), puis la colonne (entre 0 et " << t_mat-1
-             << "), puis la direction (z/q/s/d)" << endl;
+        ifstream Tour("../../tourDeJeu");
+        affichage(Tour);
 
         if (!(cin >> pos.ord >> pos.abs >> direction)) {
             cout << "Erreur de saisie. Fin du jeu." << endl;
@@ -354,11 +341,6 @@ void pvpCandyCrush(){
     int score = 0;
     cleanGridBeforeGame(grid); //on vérifie qu'il n'y ait pas déjà des alignements de 3
     displayGrid(grid, colors);
-    string answer = "non";
-    while (answer != "oui"){
-        cout << "Bienvenue sur Candy Crush PVP! Voici votre grille de jeu!" << endl << "Vous ne pouvez pas sortir, ni échanger avec une case vide, si vous essayez, le tour sera passé. Et si votre entrée est invalide, cela provoquera l'arrêt du jeux." << endl << "entrez 'oui' afin de continuer" << endl;
-        cin >> answer;
-    }
     unsigned howMany = 0;
 
     while(nbCoups > 0){
@@ -373,7 +355,8 @@ void pvpCandyCrush(){
         }
         cout << "Votre score : " << score << ",  et le nombre de coup(s) qu'il vous reste à jouer : " << (int)ceil(nbCoups/2.0) << endl;
 
-        cout << "Selectionnez la ligne (entre 0 et " << t_mat-1 << "), puis sélectionnez la colonne (entre 0 et " << t_mat-1 << "), puis la direction joueur1:(z/q/s/d) joueur2:(i/j/k/l) d'après un format (haut/gauche/bas/droite)" << endl;
+        ifstream Tour("../../tourDeJeu");
+        affichage(Tour);
 
         if (!(cin >> pos.ord >> pos.abs >> direction)) {
             cout << "Erreur de saisie. Fin du jeu." << endl;
@@ -417,21 +400,13 @@ void pvpCandyCrush(){
     couleur(KReset);
 }
 
-
-void affichageMenu(ifstream &fichier){
-    string ligne;
-    while (getline (fichier, ligne))
-    {
-        cout << ligne << endl;
-    }
-}
 int main() {
     ifstream reglesGenerales("../../reglesGenerales.txt");
     if (!reglesGenerales){
         cout << "erreur"<< endl;
         return 1;
     }
-    affichageMenu(reglesGenerales);
+    affichage(reglesGenerales);
     string answer = "non";
     while (answer != "oui"){
         cin >> answer;
@@ -441,7 +416,7 @@ int main() {
         cout << "erreur"<< endl;
         return 1;
     }
-    affichageMenu(menu);
+    affichage(menu);
     int choix;
     cin >> choix;
     if (choix == 1) progCandyCrush();
