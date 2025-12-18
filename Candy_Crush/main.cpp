@@ -417,20 +417,31 @@ void pvpCandyCrush(){
     couleur(KReset);
 }
 
-int main() {
-    ifstream reglesGenerales("./reglesGenerales.txt");
+
+void affichageMenu(ifstream &fichier){
     string ligne;
-    if (!reglesGenerales){
-        cerr << 'Erreur' << endl;
-        return 1;
-    }
-    while (true)
+    while (getline (fichier, ligne))
     {
-        getline (reglesGenerales, ligne);
-        if (reglesGenerales.eof()) break;
         cout << ligne << endl;
     }
-    cout << "choissiez votre mode de jeux 1,2,3,4" << endl;
+}
+int main() {
+    ifstream reglesGenerales("../../reglesGenerales.txt");
+    if (!reglesGenerales){
+        cout << "erreur"<< endl;
+        return 1;
+    }
+    affichageMenu(reglesGenerales);
+    string answer = "non";
+    while (answer != "oui"){
+        cin >> answer;
+    }
+    ifstream menu("../../menu.txt");
+    if (!menu){
+        cout << "erreur"<< endl;
+        return 1;
+    }
+    affichageMenu(menu);
     int choix;
     cin >> choix;
     if (choix == 1) progCandyCrush();
