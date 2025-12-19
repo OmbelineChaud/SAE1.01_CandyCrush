@@ -2,6 +2,6 @@
 #define DISPLAY_H
 
 void displayGrid(const mat& grid);
-void affichage(ifstream &fichier);s
+void affichage(ifstream &fichier);
 
 #endif // DISPLAY_H
