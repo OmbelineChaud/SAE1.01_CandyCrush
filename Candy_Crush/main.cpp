@@ -7,8 +7,6 @@
 #include <fstream>
 #include <iomanip>
 #include "constantes.h"
-#include "display.h"
-#include "display.cpp"
 
 using namespace std;
 
@@ -45,8 +43,31 @@ void initGrid(mat &grid, const size_t &matSize) {
     }
 }
 
+void displayGrid(const mat &grid, const vector<unsigned> &colors) {
+    clearScreen();
+    couleur(KReset);
+    cout << "  |";
+    for (size_t j = 0; j < grid[0].size(); ++j) {
+        cout << " " << j << " ";
+    }
+    cout << endl;
 
-
+    for (size_t i = 0; i < grid.size(); ++i) {
+        cout << i << " |";
+        for (size_t j = 0; j < grid[i].size(); ++j) {
+            if (grid[i][j] == KImpossible) {
+                cout << "   ";
+            }
+            else {
+                couleur(colors[grid[i][j]] + 10);
+                cout << " " << grid[i][j] << " ";
+                couleur(KReset);
+            }
+        }
+        cout << endl;
+    }
+    cout << endl << endl;
+}
 
 void makeAMove(mat &grid, maPosition &pos, const char &direction) {
     size_t i = pos.ord;
@@ -170,6 +191,14 @@ void fullGrid(mat &grid){
                 grid[i][j] = rand() %KNbCandies + 1;
             }
         }
+    }
+}
+
+void affichage(ifstream &fichier){
+    string ligne;
+    while (getline (fichier, ligne))
+    {
+        cout << ligne << endl;
     }
 }
 
