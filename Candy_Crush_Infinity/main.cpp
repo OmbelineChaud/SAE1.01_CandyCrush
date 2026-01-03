@@ -24,6 +24,12 @@ const unsigned KMAgenta   = 35;
 const unsigned KCyan      = 36;
 const unsigned KImpossible = 0;
 
+//mouvements
+vector<char> haut   = {'z', 'Z', 'i', 'I'};
+vector<char> droite = {'d', 'D', 'l', 'L'};
+vector<char> gauche = {'q', 'Q', 'j', 'J'};
+vector<char> bas    = {'s', 'S', 'k', 'K'};
+//liste des couleurs
 vector<unsigned> colors = {KNoir, KRouge, KVert, KJaune, KBleu, KMAgenta, KCyan};
 
 void couleur(const unsigned &coul) {
@@ -34,10 +40,10 @@ void clearScreen() {
     cout << "\033[H\033[2J";
 }
 
-void initGrid(mat &grid, const size_t &matSize, const int KNbCandies) {
-    grid.resize(matSize);
+void initGrid(mat &grid, const size_t &matSize, const unsigned &KNbCandies = 6) {
+    grid.resize(matSize);  //on redimensionne le nombre de lignes.
     for (size_t i = 0; i < matSize; ++i) {
-        grid[i].resize(matSize);
+        grid[i].resize(matSize); //on doit redimensionner le nombre de colonnes de chaque ligne.
         for (size_t j = 0; j < matSize; ++j)
             grid[i][j] = rand() % KNbCandies + 1;
     }
@@ -59,7 +65,7 @@ void displayGrid(const mat &grid, const vector<unsigned> &colors) {
                 cout << "   ";
             }
             else {
-                couleur(colors[grid[i][j] - 1] + 10); 
+                couleur(colors[grid[i][j]] + 10);
                 cout << " " << grid[i][j] << " ";
                 couleur(KReset);
             }
@@ -73,43 +79,47 @@ void makeAMove(mat &grid, maPosition &pos, const char &direction) {
     size_t i = pos.ord;
     size_t j = pos.abs;
     size_t matSize = grid.size();
-
-    if ((direction == 'z' || direction == 'Z') && i > 0) {
-        swap(grid[i][j], grid[i - 1][j]);
+    //on vérifie que le joueur n'essaye pas de déplacer une case vide
+    if (grid[i][j] == KImpossible);
+    //on regarde dans toutes les directions autorisées.
+    //on utilise find() pour parcourir les vecteurs de mouvement et trouver une correspondance.
+    else if (find(haut.begin(), haut.end(), direction) != haut.end() && i > 0 && grid[i-1][j] !=KImpossible){
+        swap(grid[i][j], grid[i-1][j]);
         pos.ord--;
     }
-    else if ((direction == 's' || direction == 'S') && i < matSize - 1) {
-        swap(grid[i][j], grid[i + 1][j]);
+    else if ((find(bas.begin(), bas.end(), direction) != bas.end()) && i < matSize-1 && grid[i+1][j] !=KImpossible){
+        swap(grid[i][j], grid[i+1][j]);
         pos.ord++;
     }
-    else if ((direction == 'q' || direction == 'Q') && j > 0) {
-        swap(grid[i][j], grid[i][j - 1]);
+    else if (find(gauche.begin(), gauche.end(), direction) != gauche.end() && j > 0 && grid[i][j-1] !=KImpossible){
+        swap(grid[i][j], grid[i][j-1]);
         pos.abs--;
     }
-    else if ((direction == 'd' || direction == 'D') && j < matSize - 1) {
-        swap(grid[i][j], grid[i][j + 1]);
+    else if (find(droite.begin(), droite.end(), direction) != droite.end() && j < matSize-1 && grid[i][j+1] !=KImpossible){
+        swap(grid[i][j], grid[i][j+1]);
         pos.abs++;
     }
+    //la direction donnée n'était pas valide.
     else {
         cout << "Coup invalide ou hors des limites !" << endl;
     }
 }
 
 bool atLeastThreeInAColumn(const mat &grid, maPosition &pos, unsigned &howMany) {
-    for (size_t j = 0; j < grid[0].size(); ++j) { 
-        for (size_t i = 0; i <= grid.size() - 3; ++i) { 
-            if (grid[i][j] == KImpossible) continue;
-            
+    for (unsigned j = 0; j < grid[0].size(); ++j) {
+        for (unsigned i = 0; i <= grid.size() - 3; ++i) {
+            if (grid[i][j] == KImpossible) continue; //pour ne pas considérer une suite de KImpossible comme une suite.
+            //on réinitialise la longueur de suite qui pouvait être enregistré.
             howMany = 1;
             size_t k = i + 1;
+            //on regarde la longueur de la suite.
             while (k < grid.size() && grid[i][j] == grid[k][j]) {
                 ++howMany;
                 ++k;
             }
-            
+            //si la suite est d'au moins 3 de long.
             if (howMany >= 3) {
-                pos.ord = i;
-                pos.abs = j;
+                pos = {i,j};
                 return true;
             }
         }
@@ -118,20 +128,20 @@ bool atLeastThreeInAColumn(const mat &grid, maPosition &pos, unsigned &howMany) 
 }
 
 bool atLeastThreeInARow(const mat &grid, maPosition &pos, unsigned &howMany) {
-    for (size_t i = 0; i < grid.size(); ++i) { 
-        for (size_t j = 0; j <= grid[i].size() - 3; ++j) { 
-            if (grid[i][j] == KImpossible) continue;
-            
+    for (unsigned i = 0; i < grid.size(); ++i) {
+        for (unsigned j = 0; j <= grid[i].size() - 3; ++j) {
+            if (grid[i][j] == KImpossible) continue; //pour ne pas considérer une suite de KImpossible comme une suite.
+            //on réinitialise la longueur de suite qui pouvait être enregistré.
             howMany = 1;
             size_t k = j + 1;
+            //on regarde la longueur de la suite.
             while (k < grid[i].size() && grid[i][j] == grid[i][k]) {
                 ++howMany;
                 ++k;
             }
-            
+            //si la suite est d'au moins 3 de long.
             if (howMany >= 3) {
-                pos.ord = i;
-                pos.abs = j;
+                pos = {i,j};
                 return true;
             }
         }
@@ -139,43 +149,49 @@ bool atLeastThreeInARow(const mat &grid, maPosition &pos, unsigned &howMany) {
     return false;
 }
 
-void removalInColumn(mat &grid, const maPosition &pos, unsigned howMany) {
-    for (unsigned i = 0; i < howMany; ++i) {
-        grid[pos.ord + i][pos.abs] = KImpossible;
+void removalInColumn(mat &grid, const maPosition &pos, unsigned &howMany) {
+    int col = pos.abs;
+    int start = pos.ord;
+    int end = start + (int)howMany-1;//int entre parenthèse met howManny à une valeur numérique int.
+    //on met les éléments à supprimer à valeur KImpossible
+    for (int i=start; i<=end; ++i){
+        grid[i][col] = KImpossible;
+    }
+
+    //remonter les éléments qui était en dessous.
+    for(int i=end+1; i<(int)grid.size(); ++i){
+        int j=i;
+        while (j > start && grid[j-1][col] == KImpossible){
+            grid[j-1][col] = grid[j][col];
+            grid[j][col] = KImpossible;
+            --j;
+        }
     }
 }
 
-void removalInRow(mat &grid, const maPosition &pos, unsigned howMany) {
-    for (unsigned j = 0; j < howMany; ++j) {
-        grid[pos.ord][pos.abs + j] = KImpossible;
+void removalInRow(mat &grid, const maPosition &pos, unsigned &howMany) {
+    int ligne = pos.ord; //similaire à removalInColumn
+    int start = pos.abs;
+    int end = start + (int)howMany-1; //int entre parenthèse met howManny à une valeur numérique int.
+    //on met les éléments à supprimer à valeur KImpossible
+    for (int i=start; i<=end; ++i){
+        grid[ligne][i] = KImpossible;
     }
-}
-
-void applyGravity(mat &grid) {
-    size_t matSize = grid.size();
-
-    for (size_t j = 0; j < matSize; ++j) {
-        std::vector<unsigned> non_impossible_candies;
-        
-        for (size_t i = 0; i < matSize; ++i) {
-            if (grid[i][j] != KImpossible) {
-                non_impossible_candies.push_back(grid[i][j]);
+    //pour chaque colonne de la suite horizontale on refait ce qu'on a fait dans removalColumn
+    for(int col=start; col<=end; ++col){
+        for (int i=ligne+1; i<(int)grid.size(); ++i){
+            int j=i;
+            while (j > ligne && grid[j-1][col] == KImpossible){
+                grid[j-1][col] = grid[j][col];
+                grid[j][col] = KImpossible;
+                --j;
             }
         }
-
-        size_t num_impossible = matSize - non_impossible_candies.size();
-        
-        for (size_t i = 0; i < num_impossible; ++i) {
-            grid[i][j] = KImpossible;
-        }
-
-        for (size_t i = 0; i < non_impossible_candies.size(); ++i) {
-            grid[num_impossible + i][j] = non_impossible_candies[i];
-        }
     }
 }
 
-void fillNewCandies(mat &grid, const int KNbCandies) {
+
+void fillNewCandies(mat &grid, const unsigned KNbCandies) {
     size_t matSize = grid.size();
     for (size_t j = 0; j < matSize; ++j) {
         for (size_t i = 0; i < matSize; ++i) {
@@ -186,14 +202,13 @@ void fillNewCandies(mat &grid, const int KNbCandies) {
     }
 }
 
-void cleanGridBeforeGame(mat &grid, const int KNbCandies) {
+void cleanGridBeforeGame(mat &grid, const unsigned KNbCandies) {
     maPosition pos;
     unsigned howMany = 0;
-    bool found;
+    while (true)
+    {
+        bool found = false;
 
-    do {
-        found = false;
-        
         while (atLeastThreeInAColumn(grid, pos, howMany)) {
             removalInColumn(grid, pos, howMany);
             found = true;
@@ -204,16 +219,18 @@ void cleanGridBeforeGame(mat &grid, const int KNbCandies) {
         }
 
         if (found) {
-            applyGravity(grid);
             fillNewCandies(grid, KNbCandies);
         }
-    } while (found);
+        else {
+            break;
+        }
+    }
 }
 
 int main() {
     mat grid;
     unsigned int t_mat = 8;
-    int KNbCandies = 6;
+    const unsigned KNbCandies = 6;
     
     srand(time(NULL)); 
     initGrid(grid, t_mat, KNbCandies);
@@ -265,7 +282,6 @@ int main() {
             }
             
             if (matched) {
-                applyGravity(grid); 
                 fillNewCandies(grid, KNbCandies);
                 
                 cout << "Match trouvé! Score: " << score << endl;

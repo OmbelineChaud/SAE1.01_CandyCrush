@@ -18,6 +18,16 @@ struct maPosition {
     unsigned abs;
 };
 
+struct Level {
+    int numero;
+    string title;
+    string description;
+    int objectif;
+    int nbCoups;
+    unsigned matSize;
+    unsigned NbCandiesStory;
+};
+
 //mouvements
 vector<char> haut   = {'z', 'Z', 'i', 'I'};
 vector<char> droite = {'d', 'D', 'l', 'L'};
@@ -26,6 +36,7 @@ vector<char> bas    = {'s', 'S', 'k', 'K'};
 //liste des couleurs
 vector<unsigned> colors = {KNoir, KRouge, KVert, KJaune, KBleu, KMAgenta, KCyan};
 
+//fonctions
 void couleur(const unsigned &coul) {
     cout << "\033[" << coul << "m";
 }
@@ -34,7 +45,7 @@ void clearScreen() {
     cout << "\033[H\033[2J";
 }
 
-void initGrid(mat &grid, const size_t &matSize) {
+void initGrid(mat &grid, const size_t &matSize, const unsigned KNbCandies) {
     grid.resize(matSize);  //on redimensionne le nombre de lignes.
     for (size_t i = 0; i < matSize; ++i) {
         grid[i].resize(matSize); //on doit redimensionner le nombre de colonnes de chaque ligne.
@@ -184,7 +195,7 @@ void removalInRow(mat &grid, const maPosition &pos, unsigned &howMany) {
     }
 }
 
-void fullGrid(mat &grid){
+void fullGrid(mat &grid, const unsigned KNbCandies) {
     for (size_t i(0); i < grid.size(); ++i){
         for (size_t j(0); j < grid.size(); ++j){
             if(grid[i][j] == KImpossible){
@@ -202,35 +213,99 @@ void affichage(ifstream &fichier){
     }
 }
 
-void cleanGridBeforeGame(mat &grid) {
+void cleanGridBeforeGame(mat &grid, const unsigned KNbCandies) {
     maPosition pos;
     unsigned howMany = 0;
-    bool found;
-    do {
+    while (true) {
         if (atLeastThreeInAColumn(grid, pos, howMany)) {
             removalInColumn(grid, pos, howMany);
-            fullGrid(grid);
-            found = true;
+            fullGrid(grid, KNbCandies);
+            
         }
         else if (atLeastThreeInARow(grid, pos, howMany)) {
             removalInRow(grid, pos, howMany);
-            fullGrid(grid);
-            found = true;
+            fullGrid(grid, KNbCandies);
+            
         }
         else {
-            found = false;
+            break;
         }
-    } while (found);
+    } 
 }
+
+vector<Level> loadCampagneFromFile(const string &filename) {
+    vector<Level> campagne;
+    ifstream file(filename);
+    if (!file) {
+        cerr << "Erreur : impossible d'ouvrir " << filename << endl;
+        return campagne;
+    }
+
+    string line;
+    while (getline(file, line)) {
+        Level lvl;
+        // numero
+        if (!line.empty()) {
+            lvl.numero = stoi(line);
+        } else {
+            continue; // ignore les lignes vides
+        }
+
+        // title
+        if (getline(file, line)) {
+            lvl.title = line;
+        } else {
+            break; // fin du fichier
+        }
+
+        // description
+        if (getline(file, line)) {
+            lvl.description = line;
+        } else {
+            break;
+        }
+
+        // objectif
+        if (getline(file, line)) {
+            lvl.objectif = stoi(line);
+        } else {
+            break;
+        }
+
+        // nbCoups
+        if (getline(file, line)) {
+            lvl.nbCoups = stoi(line);
+        } else {
+            break;
+        }
+
+        // matSize
+        if (getline(file, line)) {
+            lvl.matSize = stoi(line);
+        } else {
+            break;
+        }
+
+        // NbCandiesStory
+        if (getline(file, line)) {
+            lvl.NbCandiesStory = stoi(line);
+        } else {
+            break;
+        }
+        campagne.push_back(lvl);
+    }
+    return campagne;
+}
+
 
 void progCandyCrush(){
     unsigned nbCoups = 10;
     mat grid;
     unsigned int t_mat = 8;
     srand(time(NULL));
-    initGrid(grid, t_mat);
+    initGrid(grid, t_mat, KNbCandies);
     int score = 0;
-    cleanGridBeforeGame(grid); //on vérifie qu'il n'y ait pas déjà des alignements de 3
+    cleanGridBeforeGame(grid, KNbCandies); //on vérifie qu'il n'y ait pas déjà des alignements de 3
     displayGrid(grid, colors);
     unsigned howMany = 0;
 
@@ -239,7 +314,7 @@ void progCandyCrush(){
         cout << "votre score : " << score << " coups restant : " <<nbCoups << endl;
         maPosition pos;
         char direction;
-        ifstream Tour("../../tourDeJeu");
+        ifstream Tour("../tourDeJeu");
         affichage(Tour);
         if (!(cin >> pos.ord >> pos.abs >> direction)) {
             cout << "Erreur de saisie. Fin du jeu." << endl;
@@ -268,27 +343,28 @@ void progCandyCrush(){
 
 void infinityCandyCrush(){
     mat grid;
+    bool stop = false;
     unsigned int t_mat = 8;
     srand(time(NULL));
-    initGrid(grid, t_mat);
+    initGrid(grid, t_mat, KNbCandies);
     cout << "voici la grille de jeu" << endl;
     displayGrid(grid, colors);
     int score = 0;
-    cleanGridBeforeGame(grid);
+    cleanGridBeforeGame(grid, KNbCandies);
 
     unsigned howMany = 0;
 
-    while(score < 100){
-        cout << "votre score : " << score << endl;
+    while(!(stop)){
         displayGrid(grid, colors);
+        cout << "votre score : " << score << endl;
         maPosition pos;
         char direction;
-        ifstream Tour("../../tourDeJeu");
+        ifstream Tour("../tourDeJeu");
         affichage(Tour);
 
         if (!(cin >> pos.ord >> pos.abs >> direction)) {
             cout << "Erreur de saisie. Fin du jeu." << endl;
-            break;
+            stop = true;
         }
         if (pos.ord >= t_mat || pos.abs >= t_mat) {
             cout << "Position hors limites. Reessayez." << endl;
@@ -315,9 +391,9 @@ void infinityCandyCrush(){
             }
 
             if (matched){
-                fullGrid(grid);
-                cout << "Match trouvé! Score: " << score << endl;
-                displayGrid(grid, colors);
+                //cout << "Match trouvé! Score: " << score << endl;
+                //displayGrid(grid, colors); //optionnel : afficher la grille à chaque fois qu'un match est fait
+                fullGrid(grid, KNbCandies);
             }
         }
     }
@@ -333,12 +409,12 @@ void pvpCandyCrush(){
     maPosition pos;
     char direction;
     srand(time(NULL));
-    initGrid(grid, t_mat);
+    initGrid(grid, t_mat, KNbCandies);
 
     int score_joueur1 = 0;
     int score_joueur2 = 0;
     int score = 0;
-    cleanGridBeforeGame(grid); //on vérifie qu'il n'y ait pas déjà des alignements de 3
+    cleanGridBeforeGame(grid, KNbCandies); //on vérifie qu'il n'y ait pas déjà des alignements de 3
     displayGrid(grid, colors);
     unsigned howMany = 0;
 
@@ -354,7 +430,7 @@ void pvpCandyCrush(){
         }
         cout << "Votre score : " << score << ",  et le nombre de coup(s) qu'il vous reste à jouer : " << (int)ceil(nbCoups/2.0) << endl;
 
-        ifstream Tour("../../tourDeJeu");
+        ifstream Tour("../tourDeJeu");
         affichage(Tour);
 
         if (!(cin >> pos.ord >> pos.abs >> direction)) {
@@ -399,8 +475,96 @@ void pvpCandyCrush(){
     couleur(KReset);
 }
 
+
+void storyCandyCrush() {
+    vector<Level> campagne = loadCampagneFromFile("../lore.txt");
+    if (campagne.size() == 0) {
+        cout << "Aucun niveau chargé. Fin du jeu." << endl;
+        return;
+    }
+    bool jeuEnCours = true;
+    size_t i(0);
+    srand(time(NULL));
+
+    while (jeuEnCours && i<campagne.size()) {
+        const Level &lvl = campagne[i];
+        clearScreen();
+        couleur(KJaune);
+        cout << "CHAPITRE " << lvl.numero << " : " << lvl.title << endl;
+        couleur(KReset);
+        cout << endl << lvl.description << endl;
+        cout << "OBJECTIF : " << lvl.objectif << " points | COUPS : " << lvl.nbCoups << endl;
+        cout << endl << "Ecrivez 'oui' puis appuyez sur Entree pour commencer." << endl;
+        string pause; cin >> pause;
+
+        mat grid;
+        initGrid(grid, lvl.matSize, lvl.NbCandiesStory);
+        cleanGridBeforeGame(grid, lvl.NbCandiesStory);
+        
+        int score = 0;
+        int coups = lvl.nbCoups;
+        unsigned howMany = 0;
+
+        while (coups > 0 && score < lvl.objectif) {
+            displayGrid(grid, colors);
+            cout << "votre score : " << score << " / " << lvl.objectif << " coups restants : " << coups << endl;
+            
+            maPosition pos;
+            char direction;
+            ifstream Tour("../tourDeJeu");
+            affichage(Tour);
+
+            if (!(cin >> pos.ord >> pos.abs >> direction)) break;
+            if (pos.ord >= lvl.matSize || pos.abs >= lvl.matSize) continue;
+
+            makeAMove(grid, pos, direction);
+            bool matched = true;
+            while (matched) {
+            
+                matched = false;
+
+                while (atLeastThreeInAColumn(grid, pos, howMany)){
+                    removalInColumn(grid, pos, howMany);
+                    score = score + howMany*10;
+                    matched = true;
+                }
+
+                while (atLeastThreeInARow(grid, pos, howMany))
+                {
+                    removalInRow(grid, pos, howMany);
+                    score = score + howMany*10;
+                    matched = true;
+                }
+
+                if (matched){
+                    //cout << "Match trouvé! Score: " << score << endl;
+                    //displayGrid(grid, colors); //optionnel : afficher la grille à chaque fois qu'un match est fait
+                    fullGrid(grid, lvl.NbCandiesStory);
+                }
+            }
+            --coups;
+        }
+
+        if (score >= lvl.objectif) {
+            cout << endl << "BRAVO ! Chapitre " << lvl.numero << " termine." << endl;
+            if (lvl.numero < 5){
+                cout << "Direction le prochain niveau";
+                ++i;
+            }
+            else{
+                cout << "FÉLICITATIONS ! Le Prince Bleu est sauvé !";
+                jeuEnCours = false;
+            }
+        }
+        else {
+            cout << endl << "DEFAITE... L'histoire s'arrete ici." << endl;
+            jeuEnCours = false;
+        }
+    }
+}
+
 int main() {
-    ifstream reglesGenerales("../../reglesGenerales.txt");
+    ifstream reglesGenerales("../reglesGenerales.txt");
     if (!reglesGenerales){
         cout << "erreur"<< endl;
         return 1;
@@ -410,9 +574,9 @@ int main() {
     while (answer != "oui"){
         cin >> answer;
     }
-    ifstream menu("../../menu.txt");
+    ifstream menu("../menu.txt");
     if (!menu){
-        cout << "erreur"<< endl;
+        cout << "erreur bg"<< endl;
         return 1;
     }
     affichage(menu);
@@ -421,7 +585,7 @@ int main() {
     if (choix == 1) progCandyCrush();
     else if (choix == 2) infinityCandyCrush();
     else if (choix == 3) pvpCandyCrush();
-    //else if (choix == 4) storyCandyCrush();
+    else if (choix == 4) storyCandyCrush();
     else {
         cout << "WTF fais une entrée correcte.";
     }

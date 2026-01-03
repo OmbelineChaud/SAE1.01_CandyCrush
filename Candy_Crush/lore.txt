@@ -1,0 +1,35 @@
+1
+Le Commencement
+Le bonbon Rouge quitte le village sucre d'orges, pour aller délivrer le prince bonbon bleu.
+150
+3
+3
+2
+2
+La Douce Rivière
+Des obstacles en guimauve apparaissent !
+300
+5
+5
+3
+3
+Le Marais Collant
+Le chemin devient difficile et gluant.
+450
+7
+7
+4
+4
+Le Pied du Mont
+Le Prince Bleu n'est plus tres loin !
+600
+10
+8
+5
+5
+Le Sommet
+Face au terrible Baron Reglisse !
+800
+10
+10
+6

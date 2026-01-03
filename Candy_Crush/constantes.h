@@ -14,6 +14,6 @@ constexpr unsigned KCyan       = 36;
 //vaeur pour case vide
 constexpr unsigned KImpossible = 0;
 //valeur maximale de bonbon
-constexpr int      KNbCandies  = 6;
+constexpr unsigned KNbCandies  = 6;
 
 #endif // CONSTANTES_H
