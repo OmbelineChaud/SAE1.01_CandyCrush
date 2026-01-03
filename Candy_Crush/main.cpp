@@ -242,25 +242,26 @@ vector<Level> loadCampagneFromFile(const string &filename) {
     }
 
     string line;
-    string titrePrologue, descPrologue;
 
-    // lecture du prologue
-    getline(file, titrePrologue);
-    getline(file, descPrologue);    
-    // affichage du prologue
-    cout << titrePrologue << endl << descPrologue << endl;
+        // lecture du prologue
+    while (getline(file, line)) {
+        if (!line.empty() && line[0] == '*') {
+            cout << line << endl;
+        } else {
+            break; // première ligne de niveau
+        }
+    }
     while (getline(file, line)) {
         Level lvl;
-        while (getline(file, line)) {
-            if (line.empty()) continue;
-            if (isdigit(line[0])) break;
-        }
-        if (!file) break; // fin du fichier
 
+    
         // numero
         if (!line.empty()) {
             lvl.numero = stoi(line);
+        } else {
+            continue; // ignore les lignes vides
         }
+
         // title
         if (getline(file, line)) {
             lvl.title = line;
@@ -276,7 +277,7 @@ vector<Level> loadCampagneFromFile(const string &filename) {
         // nbCoups
         if (getline(file, line)) {
             lvl.nbCoups = stoi(line);
-        } else
+        }
         // matSize
         if (getline(file, line)) {
             lvl.matSize = stoi(line);
@@ -288,15 +289,14 @@ vector<Level> loadCampagneFromFile(const string &filename) {
         campagne.push_back(lvl);
     }
     return campagne;
-}
     
+}
 
-
+    
 void progCandyCrush(){
     unsigned nbCoups = 10;
     mat grid;
     unsigned int t_mat = 8;
-    srand(time(NULL));
     initGrid(grid, t_mat, KNbCandies);
     int score = 0;
     cleanGridBeforeGame(grid, KNbCandies); //on vérifie qu'il n'y ait pas déjà des alignements de 3
@@ -339,7 +339,6 @@ void infinityCandyCrush(){
     mat grid;
     bool stop = false;
     unsigned int t_mat = 8;
-    srand(time(NULL));
     initGrid(grid, t_mat, KNbCandies);
     cout << "voici la grille de jeu" << endl;
     displayGrid(grid, colors);
@@ -402,7 +401,6 @@ void pvpCandyCrush(){
     unsigned nbCoups = 20; //nombre de coup qui peuvent être jouer à un de plus pour affichage
     maPosition pos;
     char direction;
-    srand(time(NULL));
     initGrid(grid, t_mat, KNbCandies);
 
     int score_joueur1 = 0;
@@ -477,6 +475,11 @@ void storyCandyCrush() {
 
     while (jeuEnCours && i<campagne.size()) {
         const Level &lvl = campagne[i];
+        cout << endl << "Ecrivez 'oui' puis appuyez sur Entree pour commencer." << endl;
+        string answer = "non";
+        while (answer != "oui"){
+            cin >> answer;
+        }
         clearScreen();
         couleur(KJaune);
         cout << "CHAPITRE " << lvl.numero << " : " << lvl.title << endl;
@@ -484,7 +487,9 @@ void storyCandyCrush() {
         cout << endl << lvl.description << endl;
         cout << "OBJECTIF : " << lvl.objectif << " points | COUPS : " << lvl.nbCoups << endl;
         cout << endl << "Ecrivez 'oui' puis appuyez sur Entree pour commencer." << endl;
-        string pause; cin >> pause;
+        while (answer != "oui"){
+            cin >> answer;
+        }
 
         mat grid;
         initGrid(grid, lvl.matSize, lvl.NbCandiesStory);
@@ -535,7 +540,7 @@ void storyCandyCrush() {
                 ++i;
             }
             else{
-                cout << "FÉLICITATIONS ! Le Prince Bleu est sauvé !";
+                cout << "FELICITATIONS ! Le Prince Bleu est sauve !";
                 jeuEnCours = false;
             }
         }
