@@ -34,7 +34,7 @@ vector<char> droite = {'d', 'D', 'l', 'L'};
 vector<char> gauche = {'q', 'Q', 'j', 'J'};
 vector<char> bas    = {'s', 'S', 'k', 'K'};
 //liste des couleurs
-vector<unsigned> colors = {KNoir, KRouge, KVert, KJaune, KBleu, KMAgenta, KCyan};
+vector<unsigned> colors = {KRouge, KVert, KJaune, KBleu, KMAgenta, KCyan, KNoir};
 
 //fonctions
 void couleur(const unsigned &coul) {
@@ -70,7 +70,7 @@ void displayGrid(const mat &grid, const vector<unsigned> &colors) {
                 cout << "   ";
             }
             else {
-                couleur(colors[grid[i][j]] + 10);
+                couleur(colors[grid[i][j]-1] + 10);
                 cout << " " << grid[i][j] << " ";
                 couleur(KReset);
             }
@@ -157,13 +157,13 @@ bool atLeastThreeInARow(const mat &grid, maPosition &pos, unsigned &howMany) {
 void removalInColumn(mat &grid, const maPosition &pos, unsigned &howMany) {
     int col = pos.abs;
     int start = pos.ord;
-    int end = start + (int)howMany-1;//int entre parenthèse met howManny à une valeur numérique int.
-    //on met les éléments à supprimer à valeur KImpossible
+    int end = start + (int)howMany-1;//int entre parenthèse met howManny à une valeur numérique int
+    //on met les éléments à supprimer à la valeur KImpossible
     for (int i=start; i<=end; ++i){
         grid[i][col] = KImpossible;
     }
 
-    //remonter les éléments qui était en dessous.
+    //remonter les éléments qui était en dessous
     for(int i=end+1; i<(int)grid.size(); ++i){
         int j=i;
         while (j > start && grid[j-1][col] == KImpossible){
@@ -242,60 +242,54 @@ vector<Level> loadCampagneFromFile(const string &filename) {
     }
 
     string line;
+    string titrePrologue, descPrologue;
+
+    // lecture du prologue
+    getline(file, titrePrologue);
+    getline(file, descPrologue);    
+    // affichage du prologue
+    cout << titrePrologue << endl << descPrologue << endl;
     while (getline(file, line)) {
         Level lvl;
+        while (getline(file, line)) {
+            if (line.empty()) continue;
+            if (isdigit(line[0])) break;
+        }
+        if (!file) break; // fin du fichier
+
         // numero
         if (!line.empty()) {
             lvl.numero = stoi(line);
-        } else {
-            continue; // ignore les lignes vides
         }
-
         // title
         if (getline(file, line)) {
             lvl.title = line;
-        } else {
-            break; // fin du fichier
         }
-
         // description
         if (getline(file, line)) {
             lvl.description = line;
-        } else {
-            break;
         }
-
         // objectif
         if (getline(file, line)) {
             lvl.objectif = stoi(line);
-        } else {
-            break;
         }
-
         // nbCoups
         if (getline(file, line)) {
             lvl.nbCoups = stoi(line);
-        } else {
-            break;
-        }
-
+        } else
         // matSize
         if (getline(file, line)) {
             lvl.matSize = stoi(line);
-        } else {
-            break;
         }
-
         // NbCandiesStory
         if (getline(file, line)) {
             lvl.NbCandiesStory = stoi(line);
-        } else {
-            break;
         }
         campagne.push_back(lvl);
     }
     return campagne;
 }
+    
 
 
 void progCandyCrush(){
@@ -478,13 +472,8 @@ void pvpCandyCrush(){
 
 void storyCandyCrush() {
     vector<Level> campagne = loadCampagneFromFile("../lore.txt");
-    if (campagne.size() == 0) {
-        cout << "Aucun niveau chargé. Fin du jeu." << endl;
-        return;
-    }
     bool jeuEnCours = true;
     size_t i(0);
-    srand(time(NULL));
 
     while (jeuEnCours && i<campagne.size()) {
         const Level &lvl = campagne[i];
@@ -501,28 +490,22 @@ void storyCandyCrush() {
         initGrid(grid, lvl.matSize, lvl.NbCandiesStory);
         cleanGridBeforeGame(grid, lvl.NbCandiesStory);
         
-        int score = 0;
+        int score = 800;
         int coups = lvl.nbCoups;
         unsigned howMany = 0;
-
         while (coups > 0 && score < lvl.objectif) {
             displayGrid(grid, colors);
             cout << "votre score : " << score << " / " << lvl.objectif << " coups restants : " << coups << endl;
-            
             maPosition pos;
             char direction;
             ifstream Tour("../tourDeJeu");
             affichage(Tour);
-
             if (!(cin >> pos.ord >> pos.abs >> direction)) break;
             if (pos.ord >= lvl.matSize || pos.abs >= lvl.matSize) continue;
-
             makeAMove(grid, pos, direction);
             bool matched = true;
             while (matched) {
-            
                 matched = false;
-
                 while (atLeastThreeInAColumn(grid, pos, howMany)){
                     removalInColumn(grid, pos, howMany);
                     score = score + howMany*10;
@@ -547,7 +530,7 @@ void storyCandyCrush() {
 
         if (score >= lvl.objectif) {
             cout << endl << "BRAVO ! Chapitre " << lvl.numero << " termine." << endl;
-            if (lvl.numero < 5){
+            if (lvl.numero < 6){
                 cout << "Direction le prochain niveau";
                 ++i;
             }
@@ -556,6 +539,7 @@ void storyCandyCrush() {
                 jeuEnCours = false;
             }
         }
+
         else {
             cout << endl << "DEFAITE... L'histoire s'arrete ici." << endl;
             jeuEnCours = false;
@@ -564,6 +548,7 @@ void storyCandyCrush() {
 }
 
 int main() {
+    srand(time(NULL));
     ifstream reglesGenerales("../reglesGenerales.txt");
     if (!reglesGenerales){
         cout << "erreur"<< endl;

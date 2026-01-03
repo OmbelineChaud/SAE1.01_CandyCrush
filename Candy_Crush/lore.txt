@@ -1,35 +1,43 @@
+Prologue
+Au fond de la contree sucree, se trouve le Royaume Bonbon. Le roi Bonbon Bleu regne sur ce royaume et grace a ses pouvoirs, veille a l'harmonie des bonbons. Un soir, le roi Bonbon Bleu est enleve par le Baron Reglisse qui voulait s'emparer du pouvoir. Pour le sauver, vous devrez traverser des terres remplies de bonbons colores.
 1
 Le Commencement
-Le bonbon Rouge quitte le village sucre d'orges, pour aller délivrer le prince bonbon bleu.
+Vous traversez la prairie verdoyante. Vous, le chevalier rouge courageux, etes attaque par les bonbons verts : les Pommes Acidulees, espiegles et rapides. Vous devez les tuez vite et trouver le chemin a travers la prairie.
 150
 3
 3
 2
 2
-La Douce Rivière
-Des obstacles en guimauve apparaissent !
+La Douce Riviere
+Bravo, vous avez reussi a rejoindre la riviere de sirop ce qui fait fondre quelque bonbon vert. Mais la riviere est est remplie de bonbons jaunes. Les Jaunes, les Candy Corn (bonbon mais), aiment la lumiere. Vous devez avancez et trouver un coin avec de l'ombre pour les affaiblir.
 300
 5
 5
 3
 3
-Le Marais Collant
-Le chemin devient difficile et gluant.
+La Mangrove Collante
+Apres avoir vaincu la plus part des bonbons verts et jaunes, vous vous abritez dans une mangrove. Avec les arbres de la mangrove, il y a assez d'ombre pour affaiblir les jaunes. Cepandant, la Magrove gluante abrite des bonbons bleu, les Schtroumpfs. Ils sont calmes et intelligent. Chaque mouvement doit etre reflechi pour eviter d’etre coince dans la magrove collante. Ils sont faibles au pouvoir du Barron Reglisse. Essayez donc de vous rapprocher de lui.
 450
 7
 7
 4
-4
 Le Pied du Mont
-Le Prince Bleu n'est plus tres loin !
+Vous avez atteint le pied du mont du royaume des glaces ou vit le barron. Les Schtroumpfs ont fait caca culotte bleu quand ils ont senti l'aura demoniaque du barron. Seul les plus courageux continue de vous suivre. Les pentes sont escarpees, faites attention ou vous marcher... Car, un défi de taille se dresse devant vous, les Bonbons magenta : les Bubble-Gum, malicieuses et collant, compliquent le chemin. Vous devez faire attention ou vous marchez car dans leur forme "liquide", ils peuvent vous maintenir colle au sol pendant 7 ans. Leur point faible est la temperature extremement froide.
 600
 10
 8
 5
 5
 Le Sommet
-Face au terrible Baron Reglisse !
+Face au repaire du Baron Reglisse, les temperature chute, allant jusqu'a -50 C. Tout les bonbons verts, jaunes, bleus, magenta vous suivent mais se ne sont pas les seuls car les bonbons cyans vous barrent la route. Les Cyans, les Menthe Glaciale, sont froids et difficiles a deplacer. Chaque coup doit etre calcule pour atteindre le sommet. Ils sont faible face a la chaleur.
 800
 10
 10
 6
+6
+Le Duel Final
+Le chaos final : rouges, verts, jaunes, bleus, magenta, cyan et noirs. Les Noirs, les Reglisses, sont les serviteur du Barron, ils sont puissants et dangereux. Vous devez utiliser tout ce que vous avez appris pour sauver le Prince Bleu et restaurer la paix dans le royaume sucre !
+1000
+12
+12
+7
