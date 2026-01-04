@@ -398,7 +398,7 @@ void infinityCandyCrush(){
 void pvpCandyCrush(){
     mat grid;
     unsigned int t_mat = 8;
-    unsigned nbCoups = 20; //nombre de coup qui peuvent être jouer à un de plus pour affichage
+    unsigned nbCoups = 20; //nombre de coups qui peuvent être joués à un de plus pour affichage
     maPosition pos;
     char direction;
     initGrid(grid, t_mat, KNbCandies);
@@ -526,7 +526,7 @@ void storyCandyCrush() {
 
                 if (matched){
                     //cout << "Match trouvé! Score: " << score << endl;
-                    //displayGrid(grid, colors); //optionnel : afficher la grille à chaque fois qu'un match est fait
+                    //displayGrid(grid, colors); //optionnel : afficher la grille à chaque fois qu'il y a match
                     fullGrid(grid, lvl.NbCandiesStory);
                 }
             }
@@ -577,7 +577,7 @@ int main() {
     else if (choix == 3) pvpCandyCrush();
     else if (choix == 4) storyCandyCrush();
     else {
-        cout << "WTF fais une entrée correcte.";
+        cout << "L'entrée saisie ne fait pas partie des possibilitées.";
     }
     return 0;
 }
