@@ -384,8 +384,6 @@ void infinityCandyCrush(){
             }
 
             if (matched){
-                //cout << "Match trouvé! Score: " << score << endl;
-                //displayGrid(grid, colors); //optionnel : afficher la grille à chaque fois qu'un match est fait
                 fullGrid(grid, KNbCandies);
             }
         }
@@ -525,8 +523,6 @@ void storyCandyCrush() {
                 }
 
                 if (matched){
-                    //cout << "Match trouvé! Score: " << score << endl;
-                    //displayGrid(grid, colors); //optionnel : afficher la grille à chaque fois qu'il y a match
                     fullGrid(grid, lvl.NbCandiesStory);
                 }
             }
