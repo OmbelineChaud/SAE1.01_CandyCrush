@@ -349,7 +349,7 @@ void infinityCandyCrush(){
 
     while(!(stop)){
         displayGrid(grid, colors);
-        cout << "votre score : " << score << endl;
+        cout << "Votre score : " << score << endl;
         maPosition pos;
         char direction;
         ifstream Tour("../tourDeJeu");
@@ -475,7 +475,7 @@ void storyCandyCrush() {
 
     while (jeuEnCours && i<campagne.size()) {
         const Level &lvl = campagne[i];
-        cout << endl << "Ecrivez 'oui' puis appuyez sur Entree pour commencer." << endl;
+        cout << endl << "Ecrivez 'oui' puis appuyez sur Entrée pour commencer." << endl;
         string answer = "non";
         while (answer != "oui"){
             cin >> answer;
@@ -540,13 +540,13 @@ void storyCandyCrush() {
                 ++i;
             }
             else{
-                cout << "FELICITATIONS ! Le Prince Bleu est sauve !";
+                cout << "FELICITATIONS ! Le Prince Bleu est sauvé !";
                 jeuEnCours = false;
             }
         }
 
         else {
-            cout << endl << "DEFAITE... L'histoire s'arrete ici." << endl;
+            cout << endl << "DEFAITE... L'histoire s'arrête ici." << endl;
             jeuEnCours = false;
         }
     }
@@ -577,7 +577,7 @@ int main() {
     else if (choix == 3) pvpCandyCrush();
     else if (choix == 4) storyCandyCrush();
     else {
-        cout << "L'entrée saisie ne fait pas partie des possibilitées.";
+        cout << "L'entrée saisie ne fait pas partie des possibilités.";
     }
     return 0;
 }
