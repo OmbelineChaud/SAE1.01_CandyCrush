@@ -136,7 +136,7 @@ bool atLeastThreeInARow(const mat &grid, maPosition &pos, unsigned &howMany) {
     for (unsigned i = 0; i < grid.size(); ++i) {
         for (unsigned j = 0; j <= grid[i].size() - 3; ++j) {
             if (grid[i][j] == KImpossible) continue; //pour ne pas considérer une suite de KImpossible comme une suite.
-            //on réinitialise la longueur de suite qui pouvait être enregistré.
+            //on réinitialise la longueur de suite qui pouvait être enregistrée.
             howMany = 1;
             size_t k = j + 1;
             //on regarde la longueur de la suite.
@@ -305,7 +305,7 @@ void progCandyCrush(){
 
     while(nbCoups > 0){
         displayGrid(grid, colors);
-        cout << "votre score : " << score << " coups restant : " <<nbCoups << endl;
+        cout << "Votre score : " << score << " coups restant : " <<nbCoups << endl;
         maPosition pos;
         char direction;
         ifstream Tour("../tourDeJeu");
@@ -486,7 +486,7 @@ void storyCandyCrush() {
         couleur(KReset);
         cout << endl << lvl.description << endl;
         cout << "OBJECTIF : " << lvl.objectif << " points | COUPS : " << lvl.nbCoups << endl;
-        cout << endl << "Ecrivez 'oui' puis appuyez sur Entree pour commencer." << endl;
+        cout << endl << "Ecrivez 'oui' puis appuyez sur Entrée pour commencer." << endl;
         while (answer != "oui"){
             cin >> answer;
         }
