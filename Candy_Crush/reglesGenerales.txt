@@ -23,14 +23,14 @@
 -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° °
 Bonjour, Bienvenue sur Candy Crush version wish.
-Voici les règles de notre version visuellement pourrie:
+Voici les regles de notre version visuellement pourrie:
 1-Vous ne pouvez pas sortir de la grille. 
 2-Vous ne pouvez pas échanger avec une case vide.
-En cas de non respect des règles, votre tour sautera.
-Et si votre entrée est invalide, cela provoquera l'arrêt du jeux.
+En cas de non respect des regles, votre tour sautera.
+Et si votre entree est invalide, cela provoquera l'arret du jeux.
 Pour interagir entrez la ligne, puis la colone, enfin la direction.
 Vous avez deux choix pour la direction (z/q/s/d) et (i/j/k/l),
 sous format (haut/gauche/bas/droite).
 Vous pourrez profiter du jeu avec vos amis.  
-Les lettres peuvent être en majuscule ou minuscule. 
+Les lettres peuvent etre en majuscule ou minuscule. 
 Entrez "oui" afin de continuer.
