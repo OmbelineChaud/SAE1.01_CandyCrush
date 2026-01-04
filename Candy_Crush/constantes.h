@@ -11,9 +11,9 @@ constexpr unsigned KJaune      = 33;
 constexpr unsigned KBleu       = 34;
 constexpr unsigned KMAgenta    = 35;
 constexpr unsigned KCyan       = 36;
-//vaeur pour case vide
+//valeur pour une case vide
 constexpr unsigned KImpossible = 0;
-//valeur maximale de bonbon
+//valeur maximale de bonbons
 constexpr unsigned KNbCandies  = 6;
 
 #endif // CONSTANTES_H
