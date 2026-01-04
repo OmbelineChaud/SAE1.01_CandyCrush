@@ -84,7 +84,7 @@ void makeAMove(mat &grid, maPosition &pos, const char &direction) {
     size_t i = pos.ord;
     size_t j = pos.abs;
     size_t matSize = grid.size();
-    //on vérifie que le joueur n'essaye pas de déplacer une case vide
+    //on vérifie que le joueur n'essaie pas de déplacer une case vide
     if (grid[i][j] == KImpossible);
     //on regarde dans toutes les directions autorisées.
     //on utilise find() pour parcourir les vecteurs de mouvement et trouver une correspondance.
@@ -114,7 +114,7 @@ bool atLeastThreeInAColumn(const mat &grid, maPosition &pos, unsigned &howMany) 
     for (unsigned j = 0; j < grid[0].size(); ++j) {
         for (unsigned i = 0; i <= grid.size() - 3; ++i) {
             if (grid[i][j] == KImpossible) continue; //pour ne pas considérer une suite de KImpossible comme une suite.
-            //on réinitialise la longueur de suite qui pouvait être enregistré.
+            //on réinitialise la longueur de suite qui pouvait être enregistrée.
             howMany = 1;
             size_t k = i + 1;
             //on regarde la longueur de la suite.
@@ -163,7 +163,7 @@ void removalInColumn(mat &grid, const maPosition &pos, unsigned &howMany) {
         grid[i][col] = KImpossible;
     }
 
-    //remonter les éléments qui était en dessous
+    //remonter les éléments qui étaient en dessous
     for(int i=end+1; i<(int)grid.size(); ++i){
         int j=i;
         while (j > start && grid[j-1][col] == KImpossible){
@@ -182,7 +182,7 @@ void removalInRow(mat &grid, const maPosition &pos, unsigned &howMany) {
     for (int i=start; i<=end; ++i){
         grid[ligne][i] = KImpossible;
     }
-    //pour chaque colonne de la suite horizontale on refait ce qu'on a fait dans removalColumn
+    //pour chaque colonne de la suite horizontale on refait ce qu'on a fait dans removalInColumn
     for(int col=start; col<=end; ++col){
         for (int i=ligne+1; i<(int)grid.size(); ++i){
             int j=i;
