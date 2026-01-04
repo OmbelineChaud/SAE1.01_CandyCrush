@@ -1,7 +1,7 @@
 -_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
 ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° °
 
-Choississez le numero du mode de jeu auquel vous souhaitez jouer :
+Choississez le numéro du mode de jeu auquel vous souhaitez jouer :
 1-Basic Candy Crush
 2-Infinity Candy Crush
 3-PVP Candy Crush
