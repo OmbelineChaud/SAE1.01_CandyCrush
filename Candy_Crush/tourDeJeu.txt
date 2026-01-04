@@ -1,1 +1,1 @@
-Entrez la ligne (valeur numerique), puis la colonne (valeur numerique), puis la direction.
+Entrez la ligne (valeur numérique), puis la colonne (valeur numérique), puis la direction.
